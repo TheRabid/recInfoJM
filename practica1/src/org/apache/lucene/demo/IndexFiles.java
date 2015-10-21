@@ -268,30 +268,41 @@ public class IndexFiles {
 
 				Element eElement = (Element) nNode;
 
-				if(eElement.getElementsByTagName("dc:title").item(0) != null) {
+				if (eElement.getElementsByTagName("dc:title").item(0) != null) {
 					doc1.add(new TextField("title", eElement.getElementsByTagName("dc:title").item(0).getTextContent(),
 							Field.Store.YES));
 				}
-				
-				doc1.add(new StringField("identifier",eElement.getElementsByTagName("dc:identifier").item(0).getTextContent(), Field.Store.YES));
-				
-				if(eElement.getElementsByTagName("dc:subject").item(0) != null) {
-					doc1.add(new TextField("subject", eElement.getElementsByTagName("dc:subject").item(0).getTextContent(),
-						Field.Store.YES));
+
+				doc1.add(new StringField("identifier",
+						eElement.getElementsByTagName("dc:identifier").item(0).getTextContent(), Field.Store.YES));
+
+				if (eElement.getElementsByTagName("dc:subject").item(0) != null) {
+					doc1.add(new TextField("subject",
+							eElement.getElementsByTagName("dc:subject").item(0).getTextContent(), Field.Store.YES));
 				}
 				doc1.add(new StringField("type", eElement.getElementsByTagName("dc:type").item(0).getTextContent(),
 						Field.Store.YES));
 				doc1.add(new TextField("description",
 						eElement.getElementsByTagName("dc:description").item(0).getTextContent(), Field.Store.YES));
-				doc1.add(new TextField("creator", eElement.getElementsByTagName("dc:creator").item(0).getTextContent(),
-						Field.Store.YES));
-				doc1.add(new TextField("publisher",
-						eElement.getElementsByTagName("dc:publisher").item(0).getTextContent(), Field.Store.YES));
-				doc1.add(new StringField("format", eElement.getElementsByTagName("dc:format").item(0).getTextContent(),
-						Field.Store.YES));
-				doc1.add(new StringField("language",
-						eElement.getElementsByTagName("dc:language").item(0).getTextContent(), Field.Store.YES));
+				if (eElement.getElementsByTagName("dc:creator").item(0) != null) {
+					doc1.add(new TextField("creator",
+							eElement.getElementsByTagName("dc:creator").item(0).getTextContent(), Field.Store.YES));
+				}
 
+				if (eElement.getElementsByTagName("dc:publisher").item(0) != null) {
+					doc1.add(new TextField("publisher",
+							eElement.getElementsByTagName("dc:publisher").item(0).getTextContent(), Field.Store.YES));
+				}
+
+				if (eElement.getElementsByTagName("dc:format").item(0) != null) {
+					doc1.add(new StringField("format",
+							eElement.getElementsByTagName("dc:format").item(0).getTextContent(), Field.Store.YES));
+				}
+
+				if (eElement.getElementsByTagName("dc:language").item(0) != null) {
+					doc1.add(new StringField("language",
+							eElement.getElementsByTagName("dc:language").item(0).getTextContent(), Field.Store.YES));
+				}
 			}
 		}
 	}
