@@ -90,6 +90,7 @@ public class SearchFiles {
     
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
+    
     Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
 
     BufferedReader in = null;
@@ -109,7 +110,7 @@ public class SearchFiles {
       if (line == null || line.length() == -1) {
         break;
       }
-
+      System.out.println(line);
       line = line.trim();
       if (line.length() == 0) {
         break;
@@ -155,7 +156,7 @@ public class SearchFiles {
     
     int numTotalHits = results.totalHits;
     System.out.println(numTotalHits + " total matching documents");
-
+    
     int start = 0;
     int end = Math.min(numTotalHits, hitsPerPage);
         
