@@ -274,8 +274,7 @@ public class IndexFiles {
 				}
 				
 				doc1.add(new StringField("identifier",eElement.getElementsByTagName("dc:identifier").item(0).getTextContent(), Field.Store.YES));
-				doc1.add(new StringField("identifierpene",
-						eElement.getElementsByTagName("dc:identifier").item(0).getTextContent(), Field.Store.YES));
+				
 				if(eElement.getElementsByTagName("dc:subject").item(0) != null) {
 					doc1.add(new TextField("subject", eElement.getElementsByTagName("dc:subject").item(0).getTextContent(),
 						Field.Store.YES));
