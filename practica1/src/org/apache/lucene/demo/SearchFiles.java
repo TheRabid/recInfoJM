@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -90,7 +91,7 @@ public class SearchFiles {
     
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
-    Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
+    Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
 
     BufferedReader in = null;
     if (queries != null) {
