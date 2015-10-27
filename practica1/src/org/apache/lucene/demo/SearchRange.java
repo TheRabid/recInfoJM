@@ -120,6 +120,7 @@ public class SearchRange {
       }
       
       Query query = parser.parse(line);
+      BooleanQuery bQuery = new BooleanQuery();
       System.out.println("Searching for: " + query.toString(field));
             
       if (repeat > 0) {                           // repeat & time as benchmark
