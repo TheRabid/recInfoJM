@@ -42,9 +42,9 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 /** Simple command-line based search demo. */
-public class SearchFiles {
+public class SearchRange {
 
-  private SearchFiles() {}
+  private SearchRange() {}
 
   /** Simple command-line based search demo. */
   public static void main(String[] args) throws Exception {
@@ -102,6 +102,7 @@ public class SearchFiles {
       in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     }
     QueryParser parser = new QueryParser(Version.LUCENE_44, field, analyzer);
+    ///////////////////////////////////////////////////////////////////////
     while (true) {
       if (queries == null && queryString == null) {                        // prompt the user
         System.out.println("Enter query: ");
