@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.regex.Pattern;
+
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BooleanClause;
@@ -111,21 +113,22 @@ public class SearchRange {
 		bateriaPruebas[2] = "spatial:-15.6,6.6,50.0,72.0";
 		bateriaPruebas[3] = "spatial:-135.0,-110.0,50.0,72.0";
 
-		BooleanQuery query = getSpatialQuery(bateriaPruebas[0]);
-		
-		System.out.println("Searching for: " + query.toString(field));
+		for (String p : bateriaPruebas) {
+			BooleanQuery query = getSpatialQuery(p);
 
-		if (repeat > 0) { // repeat & time as benchmark
-			Date start = new Date();
-			for (int i = 0; i < repeat; i++) {
-				searcher.search(query, 100);
+			System.out.println("Searching for: " + query.toString(field));
+
+			if (repeat > 0) { // repeat & time as benchmark
+				Date start = new Date();
+				for (int i = 0; i < repeat; i++) {
+					searcher.search(query, 100);
+				}
+				Date end = new Date();
+				System.out.println("Time: " + (end.getTime() - start.getTime()) + "ms");
 			}
-			Date end = new Date();
-			System.out.println("Time: " + (end.getTime() - start.getTime()) + "ms");
+
+			doPagingSearch(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null);
 		}
-
-		doPagingSearch(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null);
-
 		reader.close();
 	}
 
@@ -153,109 +156,57 @@ public class SearchRange {
 		int start = 0;
 		int end = Math.min(numTotalHits, hitsPerPage);
 
-		while (true) {
-			if (end > hits.length) {
-				System.out.println("Only results 1 - " + hits.length + " of " + numTotalHits
-						+ " total matching documents collected.");
-				System.out.println("Collect more (y/n) ?");
-				String line = in.readLine();
-				if (line.length() == 0 || line.charAt(0) == 'n') {
-					break;
-				}
+		end = hits.length;
 
-				hits = searcher.search(query, numTotalHits).scoreDocs;
+		for (int i = start; i < end; i++) {
+			if (raw) { // output raw format
+				System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score);
+				continue;
 			}
 
-			end = Math.min(hits.length, start + hitsPerPage);
-
-			for (int i = start; i < end; i++) {
-				if (raw) { // output raw format
-					System.out.println("doc=" + hits[i].doc + " score=" + hits[i].score);
-					continue;
+			Document doc = searcher.doc(hits[i].doc);
+			String path = doc.get("path");
+			if (path != null) {
+				// System.out.println((i + 1) + ". " + path);
+				System.out.print(
+						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]
+								.substring(0, 2));
+				if (i != end - 1)
+					System.out.print(", ");
+				else {
+					System.out.println();
+					System.out.println();
 				}
-
-				Document doc = searcher.doc(hits[i].doc);
-				String path = doc.get("path");
-				if (path != null) {
-					System.out.println((i + 1) + ". " + path);
-					Date d = new Date(Long.parseLong(doc.get("modified")));
-					System.out.println("   modified: " + d);
-					System.out.println(searcher.explain(query, hits[i].doc));
-				} else {
-					System.out.println((i + 1) + ". " + "No path for this document");
-				}
-
+			} else {
+				// System.out.println((i + 1) + ". " + "No path for this
+				// document");
 			}
 
-			if (!interactive || end == 0) {
-				break;
-			}
-
-			if (numTotalHits >= end) {
-				boolean quit = false;
-				while (true) {
-					System.out.print("Press ");
-					if (start - hitsPerPage >= 0) {
-						System.out.print("(p)revious page, ");
-					}
-					if (start + hitsPerPage < numTotalHits) {
-						System.out.print("(n)ext page, ");
-					}
-					System.out.println("(q)uit or enter number to jump to a page.");
-
-					String line = in.readLine();
-					if (line.length() == 0 || line.charAt(0) == 'q') {
-						quit = true;
-						break;
-					}
-					if (line.charAt(0) == 'p') {
-						start = Math.max(0, start - hitsPerPage);
-						break;
-					} else if (line.charAt(0) == 'n') {
-						if (start + hitsPerPage < numTotalHits) {
-							start += hitsPerPage;
-						}
-						break;
-					} else {
-						int page = Integer.parseInt(line);
-						if ((page - 1) * hitsPerPage < numTotalHits) {
-							start = (page - 1) * hitsPerPage;
-							break;
-						} else {
-							System.out.println("No such page");
-						}
-					}
-				}
-				if (quit)
-					break;
-				end = Math.min(numTotalHits, start + hitsPerPage);
-			}
 		}
 	}
-	
-	
-	public static BooleanQuery getSpatialQuery(String input){
+
+	public static BooleanQuery getSpatialQuery(String input) {
 		BooleanQuery query = new BooleanQuery();
-		
+
 		String chop = input.split(":")[1];
-		
+
 		Double west = new Double(Double.parseDouble(chop.split(",")[0]));
 		Double east = new Double(Double.parseDouble(chop.split(",")[1]));
 		Double south = new Double(Double.parseDouble(chop.split(",")[2]));
 		Double north = new Double(Double.parseDouble(chop.split(",")[3]));
-		
+
 		// valor este de la caja de consulta
 		// Xmin <= east
 		NumericRangeQuery<Double> westRangeQuery = NumericRangeQuery.newDoubleRange("west", null, east, true, true);
 		NumericRangeQuery<Double> eastRangeQuery = NumericRangeQuery.newDoubleRange("east", west, null, true, true);
 		NumericRangeQuery<Double> southRangeQuery = NumericRangeQuery.newDoubleRange("south", null, north, true, true);
 		NumericRangeQuery<Double> northRangeQuery = NumericRangeQuery.newDoubleRange("north", south, null, true, true);
-		
+
 		query.add(westRangeQuery, BooleanClause.Occur.MUST);
 		query.add(eastRangeQuery, BooleanClause.Occur.MUST);
 		query.add(southRangeQuery, BooleanClause.Occur.MUST);
 		query.add(northRangeQuery, BooleanClause.Occur.MUST);
-		
+
 		return query;
 	}
 }
