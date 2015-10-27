@@ -20,6 +20,7 @@ package org.apache.lucene.demo;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.LongField;
@@ -298,25 +299,64 @@ public class IndexFiles {
 					doc1.add(new TextField("description",
 							eElement.getElementsByTagName("dc:description").item(0).getTextContent(), Field.Store.YES));
 				}
-				
+
+				// Creator
 				if (eElement.getElementsByTagName("dc:creator").item(0) != null) {
 					doc1.add(new TextField("creator",
 							eElement.getElementsByTagName("dc:creator").item(0).getTextContent(), Field.Store.YES));
 				}
 
+				// Publisher
 				if (eElement.getElementsByTagName("dc:publisher").item(0) != null) {
 					doc1.add(new TextField("publisher",
 							eElement.getElementsByTagName("dc:publisher").item(0).getTextContent(), Field.Store.YES));
 				}
 
+				// Format
 				if (eElement.getElementsByTagName("dc:format").item(0) != null) {
 					doc1.add(new StringField("format",
 							eElement.getElementsByTagName("dc:format").item(0).getTextContent(), Field.Store.YES));
 				}
 
+				// Language
 				if (eElement.getElementsByTagName("dc:language").item(0) != null) {
 					doc1.add(new StringField("language",
 							eElement.getElementsByTagName("dc:language").item(0).getTextContent(), Field.Store.YES));
+				}
+
+				// BoundingBox
+				if (eElement.getElementsByTagName("ows:BoundingBox").item(0) != null) {
+					NodeList mList = doc.getElementsByTagName("ows:BoundingBox");
+					for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
+						Node mNode = mList.item(temp2);
+
+						System.out.println("\nCurrent Element :" + mNode.getNodeName());
+						if (mNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element mElement = (Element) mNode;
+
+							// Lower corner
+							if (mElement.getElementsByTagName("ows:LowerCorner").item(0) != null) {
+								String contents = mElement.getElementsByTagName("ows:LowerCorner").item(0)
+										.getTextContent();
+								String[] array = contents.split(" ");
+								double westDouble = Double.parseDouble(array[0]);
+								double southDouble = Double.parseDouble(array[1]);
+								doc1.add(new DoubleField("west", westDouble, Field.Store.YES));
+								doc1.add(new DoubleField("south", southDouble, Field.Store.YES));
+							}
+
+							// Upper corner
+							if (mElement.getElementsByTagName("ows:UpperCorner").item(0) != null) {
+								String contents = mElement.getElementsByTagName("ows:UpperCorner").item(0)
+										.getTextContent();
+								String[] array = contents.split(" ");
+								double eastDouble = Double.parseDouble(array[0]);
+								double northDouble = Double.parseDouble(array[1]);
+								doc1.add(new DoubleField("east", eastDouble, Field.Store.YES));
+								doc1.add(new DoubleField("north", northDouble, Field.Store.YES));
+							}
+						}
+					}
 				}
 			}
 		}
