@@ -241,11 +241,7 @@ public class SearchFiles {
     }
   }
   
-  public static BooleanQuery getSpatialQuery(String input) {
-		BooleanQuery query = new BooleanQuery();
-
-		//String chop = input.split(":")[1];
-
+  public static void enterSpatialQuery(String input, BooleanQuery query) {
 		Double west = new Double(Double.parseDouble(input.split(",")[0]));
 		Double east = new Double(Double.parseDouble(input.split(",")[1]));
 		Double south = new Double(Double.parseDouble(input.split(",")[2]));
@@ -262,7 +258,5 @@ public class SearchFiles {
 		query.add(eastRangeQuery, BooleanClause.Occur.MUST);
 		query.add(southRangeQuery, BooleanClause.Occur.MUST);
 		query.add(northRangeQuery, BooleanClause.Occur.MUST);
-
-		return query;
 	}
 }
