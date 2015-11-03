@@ -112,9 +112,12 @@ public class SearchRange {
 		bateriaPruebas[1] = "spatial:-15.6,6.6,35.0,44.7";
 		bateriaPruebas[2] = "spatial:-15.6,6.6,50.0,72.0";
 		bateriaPruebas[3] = "spatial:-135.0,-110.0,50.0,72.0";
+		//bateriaPruebas[4] = "spatial:-180.0,180.0,-90.0,90.0 title:natura";
 
 		for (String p : bateriaPruebas) {
-			BooleanQuery query = getSpatialQuery(p);
+			String[] inputs = p.split(":");
+			
+			BooleanQuery query = getSpatialQuery(inputs[1]);
 
 			System.out.println("Searching for: " + query.toString(field));
 
@@ -188,12 +191,12 @@ public class SearchRange {
 	public static BooleanQuery getSpatialQuery(String input) {
 		BooleanQuery query = new BooleanQuery();
 
-		String chop = input.split(":")[1];
+		//String chop = input.split(":")[1];
 
-		Double west = new Double(Double.parseDouble(chop.split(",")[0]));
-		Double east = new Double(Double.parseDouble(chop.split(",")[1]));
-		Double south = new Double(Double.parseDouble(chop.split(",")[2]));
-		Double north = new Double(Double.parseDouble(chop.split(",")[3]));
+		Double west = new Double(Double.parseDouble(input.split(",")[0]));
+		Double east = new Double(Double.parseDouble(input.split(",")[1]));
+		Double south = new Double(Double.parseDouble(input.split(",")[2]));
+		Double north = new Double(Double.parseDouble(input.split(",")[3]));
 
 		// valor este de la caja de consulta
 		// Xmin <= east
