@@ -119,7 +119,11 @@ public class SearchFiles {
         break;
       }
       
-      Query query = parser.parse(line);
+      //Query query = parser.parse(line);
+      BooleanQuery query = new BooleanQuery();
+      Query queryStr = parser.parse(line);
+      query.add(queryStr, BooleanClause.Occur.MUST);
+      
       System.out.println("Searching for: " + query.toString(field));
             
       if (repeat > 0) {                           // repeat & time as benchmark
