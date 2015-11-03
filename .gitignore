@@ -11,9 +11,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-./practica1/index/*
-./practica1/.settings/*
-./practica1/bin/*
-./practica1/dublinCore/*
-./practica1/.classpath
-./practica1/.project
+practica1/index
+practica1/.settings
+practica1/bin
+practica1/dublinCore
+practica1/.classpath
+practica1/.project
