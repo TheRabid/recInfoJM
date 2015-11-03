@@ -187,7 +187,7 @@ public class SearchRange {
 
 		}
 	}
-
+	
 	public static BooleanQuery getSpatialQuery(String input) {
 		BooleanQuery query = new BooleanQuery();
 

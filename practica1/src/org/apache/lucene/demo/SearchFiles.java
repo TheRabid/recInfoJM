@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.Iterator;
 import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -239,4 +240,29 @@ public class SearchFiles {
       }
     }
   }
+  
+  public static BooleanQuery getSpatialQuery(String input) {
+		BooleanQuery query = new BooleanQuery();
+
+		//String chop = input.split(":")[1];
+
+		Double west = new Double(Double.parseDouble(input.split(",")[0]));
+		Double east = new Double(Double.parseDouble(input.split(",")[1]));
+		Double south = new Double(Double.parseDouble(input.split(",")[2]));
+		Double north = new Double(Double.parseDouble(input.split(",")[3]));
+
+		// valor este de la caja de consulta
+		// Xmin <= east
+		NumericRangeQuery<Double> westRangeQuery = NumericRangeQuery.newDoubleRange("west", null, east, true, true);
+		NumericRangeQuery<Double> eastRangeQuery = NumericRangeQuery.newDoubleRange("east", west, null, true, true);
+		NumericRangeQuery<Double> southRangeQuery = NumericRangeQuery.newDoubleRange("south", null, north, true, true);
+		NumericRangeQuery<Double> northRangeQuery = NumericRangeQuery.newDoubleRange("north", south, null, true, true);
+
+		query.add(westRangeQuery, BooleanClause.Occur.MUST);
+		query.add(eastRangeQuery, BooleanClause.Occur.MUST);
+		query.add(southRangeQuery, BooleanClause.Occur.MUST);
+		query.add(northRangeQuery, BooleanClause.Occur.MUST);
+
+		return query;
+	}
 }
