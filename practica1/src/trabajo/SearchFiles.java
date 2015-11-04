@@ -20,17 +20,31 @@ package trabajo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DoubleField;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.LongField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -41,6 +55,11 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /** Simple command-line based search demo. */
 public class SearchFiles {
@@ -286,5 +305,59 @@ public class SearchFiles {
 		query.add(eastRangeQuery, BooleanClause.Occur.MUST);
 		query.add(southRangeQuery, BooleanClause.Occur.MUST);
 		query.add(northRangeQuery, BooleanClause.Occur.MUST);
+	}
+	
+	public static ArrayList<String[]> informationNeedsParser(File f)
+			throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+
+		FileInputStream fis = new FileInputStream(f);
+		InputSource is = new InputSource(fis);
+		org.w3c.dom.Document doc = builder.parse(is);
+
+		NodeList nList = doc.getElementsByTagName("informationNeeds");
+		String[] identifiers = new String[nList.getLength()];
+		String[] needs = new String[nList.getLength()];
+
+		for (int temp = 0; temp < nList.getLength(); temp++) {
+
+			Node nNode = nList.item(temp);
+			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element eElement = (Element) nNode;
+
+				// Informatino need
+				if (eElement.getElementsByTagName("informationNeed").item(0) != null) {
+					NodeList mList = doc.getElementsByTagName("informationNeed");
+					for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
+						Node mNode = mList.item(temp2);
+
+						if (mNode.getNodeType() == Node.ELEMENT_NODE) {
+							Element mElement = (Element) mNode;
+
+							// Identifier for information need
+							if (mElement.getElementsByTagName("identifier").item(0) != null) {
+								String identifier = mElement.getElementsByTagName("identifier").item(0)
+										.getTextContent();
+								identifiers[temp] = identifier;
+							}
+
+							// Information need itself
+							if (mElement.getElementsByTagName("informationNeed").item(0) != null) {
+								String need = mElement.getElementsByTagName("informationNeed").item(0)
+										.getTextContent();
+								needs[temp]=need;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		ArrayList<String[]> returned = new ArrayList<String[]>();
+		returned.add(identifiers);
+		returned.add(needs);
+		return returned;
 	}
 }
