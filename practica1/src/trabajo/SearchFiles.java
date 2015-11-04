@@ -157,6 +157,67 @@ public class SearchFiles {
 					if (s.hasNextLine()) {
 						line = s.nextLine();
 						System.out.println("line" + line);
+		System.out.println("length: " + needs.length);
+		for (int i=0; i<needs.length; i++) {
+			
+			List<String> result = new ArrayList<String>();
+		    try {
+		      TokenStream stream  = analyzer.tokenStream(null, needs[i]);
+		      stream.reset();
+		      while (stream.incrementToken()) {
+		        result.add(stream.getAttribute(CharTermAttribute.class).toString());
+		      }
+		    } catch (IOException e) {
+		      // not thrown b/c we're using a string reader...
+		      throw new RuntimeException(e);
+		    }
+				
+			
+			System.out.println(result);
+	
+			/*if (line == null || line.length() == -1) {
+				//Exit
+			} else {
+				line = line.trim();
+				if (line.length() != 0) {
+	
+					BooleanQuery query = new BooleanQuery();
+	
+					if (line.startsWith("spatial")) {
+						Scanner s = new Scanner(line);
+						String input = s.next();
+						input = input.split(":")[1];
+						System.out.println("input: " + input);
+	
+						Double west = new Double(Double.parseDouble(input.split(",")[0]));
+						Double east = new Double(Double.parseDouble(input.split(",")[1]));
+						Double south = new Double(Double.parseDouble(input.split(",")[2]));
+						Double north = new Double(Double.parseDouble(input.split(",")[3]));
+	
+						// valor este de la caja de consulta
+						// Xmin <= east
+						NumericRangeQuery<Double> westRangeQuery = NumericRangeQuery.newDoubleRange("west", null, east,
+								true, true);
+						NumericRangeQuery<Double> eastRangeQuery = NumericRangeQuery.newDoubleRange("east", west, null,
+								true, true);
+						NumericRangeQuery<Double> southRangeQuery = NumericRangeQuery.newDoubleRange("south", null, north,
+								true, true);
+						NumericRangeQuery<Double> northRangeQuery = NumericRangeQuery.newDoubleRange("north", south, null,
+								true, true);
+	
+						query.add(westRangeQuery, BooleanClause.Occur.SHOULD);
+						query.add(eastRangeQuery, BooleanClause.Occur.SHOULD);
+						query.add(southRangeQuery, BooleanClause.Occur.SHOULD);
+						query.add(northRangeQuery, BooleanClause.Occur.SHOULD);
+	
+						if (s.hasNextLine()) {
+							line = s.nextLine();
+							System.out.println("line" + line);
+							Query queryStr = parser.parse(line);
+							query.add(queryStr, BooleanClause.Occur.SHOULD);
+						}
+						s.close();
+					} else {
 						Query queryStr = parser.parse(line);
 						query.add(queryStr, BooleanClause.Occur.SHOULD);
 					}
