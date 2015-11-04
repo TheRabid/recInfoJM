@@ -120,7 +120,7 @@ public class SearchFiles {
 		String line = queryString != null ? queryString : in.readLine();
 
 		if (line == null || line.length() == -1) {
-			//Exit
+			// Exit
 		} else {
 			line = line.trim();
 			if (line.length() != 0) {
@@ -310,7 +310,7 @@ public class SearchFiles {
 		query.add(southRangeQuery, BooleanClause.Occur.MUST);
 		query.add(northRangeQuery, BooleanClause.Occur.MUST);
 	}
-	
+
 	public static ArrayList<String[]> informationNeedsParser(File f)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -319,46 +319,33 @@ public class SearchFiles {
 		FileInputStream fis = new FileInputStream(f);
 		InputSource is = new InputSource(fis);
 		org.w3c.dom.Document doc = builder.parse(is);
+		
 
-		NodeList nList = doc.getElementsByTagName("informationNeeds");
-		String[] identifiers = new String[nList.getLength()];
-		String[] needs = new String[nList.getLength()];
+		// Information need
+		NodeList mList = doc.getElementsByTagName("informationNeed");
+		String[] identifiers = new String[mList.getLength()];
+		String[] needs = new String[mList.getLength()];
+		
+		for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
+			Node mNode = mList.item(temp2);
 
-		for (int temp = 0; temp < nList.getLength(); temp++) {
+			if (mNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element mElement = (Element) mNode;
 
-			Node nNode = nList.item(temp);
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+				// Identifier for information need
+				if (mElement.getElementsByTagName("identifier").item(0) != null) {
+					String identifier = mElement.getElementsByTagName("identifier").item(0).getTextContent();
+					identifiers[temp2] = identifier;
+				}
 
-				Element eElement = (Element) nNode;
-
-				// Informatino need
-				if (eElement.getElementsByTagName("informationNeed").item(0) != null) {
-					NodeList mList = doc.getElementsByTagName("informationNeed");
-					for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
-						Node mNode = mList.item(temp2);
-
-						if (mNode.getNodeType() == Node.ELEMENT_NODE) {
-							Element mElement = (Element) mNode;
-
-							// Identifier for information need
-							if (mElement.getElementsByTagName("identifier").item(0) != null) {
-								String identifier = mElement.getElementsByTagName("identifier").item(0)
-										.getTextContent();
-								identifiers[temp] = identifier;
-							}
-
-							// Information need itself
-							if (mElement.getElementsByTagName("text").item(0) != null) {
-								String need = mElement.getElementsByTagName("text").item(0)
-										.getTextContent();
-								needs[temp]=need;
-							}
-						}
-					}
+				// Information need itself
+				if (mElement.getElementsByTagName("text").item(0) != null) {
+					String need = mElement.getElementsByTagName("text").item(0).getTextContent();
+					needs[temp2] = need;
 				}
 			}
 		}
-		
+
 		ArrayList<String[]> returned = new ArrayList<String[]>();
 		returned.add(identifiers);
 		returned.add(needs);
