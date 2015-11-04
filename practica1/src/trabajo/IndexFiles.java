@@ -19,7 +19,6 @@ package trabajo;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -38,14 +37,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -240,7 +235,6 @@ public class IndexFiles {
 					}
 
 				} catch (ParserConfigurationException | SAXException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
 					fis.close();
