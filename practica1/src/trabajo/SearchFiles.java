@@ -108,6 +108,10 @@ public class SearchFiles {
 		/*
 		 * Aquí va el codigo para obtener un String con las queries
 		 */
+		File f = new File(infoNeeds);
+		ArrayList<String[]> results = informationNeedsParser(f);
+		String[] identifiers = results.get(0);
+		String[] needs = results.get(1);
 
 		BufferedReader in = null;
 		in = new BufferedReader(new InputStreamReader(new FileInputStream(queries), "UTF-8"));
@@ -344,8 +348,8 @@ public class SearchFiles {
 							}
 
 							// Information need itself
-							if (mElement.getElementsByTagName("informationNeed").item(0) != null) {
-								String need = mElement.getElementsByTagName("informationNeed").item(0)
+							if (mElement.getElementsByTagName("text").item(0) != null) {
+								String need = mElement.getElementsByTagName("text").item(0)
 										.getTextContent();
 								needs[temp]=need;
 							}
