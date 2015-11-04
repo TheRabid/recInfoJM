@@ -104,13 +104,12 @@ public class SearchFiles {
 		}
 
 		System.out.println(infoNeeds);
-		
+
 		// Index
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
 		IndexSearcher searcher = new IndexSearcher(reader);
 		Analyzer analyzer = new SpanishAnalyzer(Version.LATEST);
-		
-	
+
 		/*
 		 * Aquí va el codigo para obtener un String con las queries
 		 */
@@ -120,86 +119,73 @@ public class SearchFiles {
 		String[] needs = results.get(1);
 
 		System.out.println("length: " + needs.length);
-		for (int i=0; i<needs.length; i++) {
-			
+		for (int i = 0; i < needs.length; i++) {
+
 			List<String> result = new ArrayList<String>();
-		    try {
-		      TokenStream stream  = analyzer.tokenStream(null, needs[i]);
-		      stream.reset();
-		      while (stream.incrementToken()) {
-		        result.add(stream.getAttribute(CharTermAttribute.class).toString());
-		      }
-		    } catch (IOException e) {
-		      // not thrown b/c we're using a string reader...
-		      throw new RuntimeException(e);
-		    }
-				
-			
-			System.out.println(result);
-	
-			/*if (line == null || line.length() == -1) {
-				//Exit
-			} else {
-				line = line.trim();
-				if (line.length() != 0) {
-	
-					BooleanQuery query = new BooleanQuery();
-	
-					if (line.startsWith("spatial")) {
-						Scanner s = new Scanner(line);
-						String input = s.next();
-						input = input.split(":")[1];
-						System.out.println("input: " + input);
-	
-						Double west = new Double(Double.parseDouble(input.split(",")[0]));
-						Double east = new Double(Double.parseDouble(input.split(",")[1]));
-						Double south = new Double(Double.parseDouble(input.split(",")[2]));
-						Double north = new Double(Double.parseDouble(input.split(",")[3]));
-	
-						// valor este de la caja de consulta
-						// Xmin <= east
-						NumericRangeQuery<Double> westRangeQuery = NumericRangeQuery.newDoubleRange("west", null, east,
-								true, true);
-						NumericRangeQuery<Double> eastRangeQuery = NumericRangeQuery.newDoubleRange("east", west, null,
-								true, true);
-						NumericRangeQuery<Double> southRangeQuery = NumericRangeQuery.newDoubleRange("south", null, north,
-								true, true);
-						NumericRangeQuery<Double> northRangeQuery = NumericRangeQuery.newDoubleRange("north", south, null,
-								true, true);
-	
-						query.add(westRangeQuery, BooleanClause.Occur.SHOULD);
-						query.add(eastRangeQuery, BooleanClause.Occur.SHOULD);
-						query.add(southRangeQuery, BooleanClause.Occur.SHOULD);
-						query.add(northRangeQuery, BooleanClause.Occur.SHOULD);
-	
-						if (s.hasNextLine()) {
-							line = s.nextLine();
-							System.out.println("line" + line);
-							Query queryStr = parser.parse(line);
-							query.add(queryStr, BooleanClause.Occur.SHOULD);
-						}
-						s.close();
-					} else {
-						Query queryStr = parser.parse(line);
-						query.add(queryStr, BooleanClause.Occur.MUST);
-					}
-	
-					System.out.println("Searching for: " + query.toString(field));
-	
-					if (repeat > 0) { // repeat & time as benchmark
-						Date start = new Date();
-						for (int i = 0; i < repeat; i++) {
-							searcher.search(query, 100);
-						}
-						Date end = new Date();
-						System.out.println("Time: " + (end.getTime() - start.getTime()) + "ms");
-					}
-	
-					doPagingSearch(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null);
-	
-					reader.close();
+			try {
+				TokenStream stream = analyzer.tokenStream(null, needs[i]);
+				stream.reset();
+				while (stream.incrementToken()) {
+					result.add(stream.getAttribute(CharTermAttribute.class).toString());
 				}
-			}*/
+			} catch (IOException e) {
+				// not thrown b/c we're using a string reader...
+				throw new RuntimeException(e);
+			}
+
+			System.out.println(result);
+
+			/*
+			 * if (line == null || line.length() == -1) { //Exit } else { line =
+			 * line.trim(); if (line.length() != 0) {
+			 * 
+			 * BooleanQuery query = new BooleanQuery();
+			 * 
+			 * if (line.startsWith("spatial")) { Scanner s = new Scanner(line);
+			 * String input = s.next(); input = input.split(":")[1];
+			 * System.out.println("input: " + input);
+			 * 
+			 * Double west = new
+			 * Double(Double.parseDouble(input.split(",")[0])); Double east =
+			 * new Double(Double.parseDouble(input.split(",")[1])); Double south
+			 * = new Double(Double.parseDouble(input.split(",")[2])); Double
+			 * north = new Double(Double.parseDouble(input.split(",")[3]));
+			 * 
+			 * // valor este de la caja de consulta // Xmin <= east
+			 * NumericRangeQuery<Double> westRangeQuery =
+			 * NumericRangeQuery.newDoubleRange("west", null, east, true, true);
+			 * NumericRangeQuery<Double> eastRangeQuery =
+			 * NumericRangeQuery.newDoubleRange("east", west, null, true, true);
+			 * NumericRangeQuery<Double> southRangeQuery =
+			 * NumericRangeQuery.newDoubleRange("south", null, north, true,
+			 * true); NumericRangeQuery<Double> northRangeQuery =
+			 * NumericRangeQuery.newDoubleRange("north", south, null, true,
+			 * true);
+			 * 
+			 * query.add(westRangeQuery, BooleanClause.Occur.SHOULD);
+			 * query.add(eastRangeQuery, BooleanClause.Occur.SHOULD);
+			 * query.add(southRangeQuery, BooleanClause.Occur.SHOULD);
+			 * query.add(northRangeQuery, BooleanClause.Occur.SHOULD);
+			 * 
+			 * if (s.hasNextLine()) { line = s.nextLine();
+			 * System.out.println("line" + line); Query queryStr =
+			 * parser.parse(line); query.add(queryStr,
+			 * BooleanClause.Occur.SHOULD); } s.close(); } else { Query queryStr
+			 * = parser.parse(line); query.add(queryStr,
+			 * BooleanClause.Occur.MUST); }
+			 * 
+			 * System.out.println("Searching for: " + query.toString(field));
+			 * 
+			 * if (repeat > 0) { // repeat & time as benchmark Date start = new
+			 * Date(); for (int i = 0; i < repeat; i++) { searcher.search(query,
+			 * 100); } Date end = new Date(); System.out.println("Time: " +
+			 * (end.getTime() - start.getTime()) + "ms"); }
+			 * 
+			 * doPagingSearch(in, searcher, query, hitsPerPage, raw, queries ==
+			 * null && queryString == null);
+			 * 
+			 * reader.close(); } }
+			 */
 		}
 	}
 
@@ -329,7 +315,7 @@ public class SearchFiles {
 		query.add(southRangeQuery, BooleanClause.Occur.MUST);
 		query.add(northRangeQuery, BooleanClause.Occur.MUST);
 	}
-	
+
 	public static ArrayList<String[]> informationNeedsParser(File f)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -339,45 +325,30 @@ public class SearchFiles {
 		InputSource is = new InputSource(fis);
 		org.w3c.dom.Document doc = builder.parse(is);
 
-		NodeList nList = doc.getElementsByTagName("informationNeeds");
-		String[] identifiers = new String[nList.getLength()];
-		String[] needs = new String[nList.getLength()];
+		NodeList mList = doc.getElementsByTagName("informationNeed");
+		String[] identifiers = new String[mList.getLength()];
+		String[] needs = new String[mList.getLength()];
+		
+		for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
+			Node mNode = mList.item(temp2);
+			
+			if (mNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element mElement = (Element) mNode;
 
-		for (int temp = 0; temp < nList.getLength(); temp++) {
+				// Identifier for information need
+				if (mElement.getElementsByTagName("identifier").item(0) != null) {
+					String identifier = mElement.getElementsByTagName("identifier").item(0).getTextContent();
+					identifiers[temp2] = identifier;
+				}
 
-			Node nNode = nList.item(temp);
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-				Element eElement = (Element) nNode;
-
-				// Informatino need
-				if (eElement.getElementsByTagName("informationNeed").item(0) != null) {
-					NodeList mList = doc.getElementsByTagName("informationNeed");
-					for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
-						Node mNode = mList.item(temp2);
-
-						if (mNode.getNodeType() == Node.ELEMENT_NODE) {
-							Element mElement = (Element) mNode;
-
-							// Identifier for information need
-							if (mElement.getElementsByTagName("identifier").item(0) != null) {
-								String identifier = mElement.getElementsByTagName("identifier").item(0)
-										.getTextContent();
-								identifiers[temp] = identifier;
-							}
-
-							// Information need itself
-							if (mElement.getElementsByTagName("text").item(0) != null) {
-								String need = mElement.getElementsByTagName("text").item(0)
-										.getTextContent();
-								needs[temp]=need;
-							}
-						}
-					}
+				// Information need itself
+				if (mElement.getElementsByTagName("text").item(0) != null) {
+					String need = mElement.getElementsByTagName("text").item(0).getTextContent();
+					needs[temp2] = need;
 				}
 			}
 		}
-		
+
 		ArrayList<String[]> returned = new ArrayList<String[]>();
 		returned.add(identifiers);
 		returned.add(needs);
