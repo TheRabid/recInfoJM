@@ -105,16 +105,25 @@ public class SearchFiles {
 
 			System.out.println(result);
 			ArrayList<String> autores = getCreator(input);
-			System.out.println(result);
+			ArrayList<Integer> period = getPeriod();
 			
-			BooleanQuery author = new BooleanQuery();
-			for (String autor:autores) {
-				TermQuery queryStr = new TermQuery(new Term("creator", autor));
-				author.add(queryStr, BooleanClause.Occur.SHOULD);
-				System.out.println(autor);
+			if (autores.size() != 0) {
+				BooleanQuery author = new BooleanQuery();
+				for (String autor:autores) {
+					TermQuery queryStr = new TermQuery(new Term("creator", autor));
+					author.add(queryStr, BooleanClause.Occur.SHOULD);
+					System.out.println(autor);
+				}
+				query.add(author, BooleanClause.Occur.MUST);
 			}
-			query.add(author, BooleanClause.Occur.MUST);
 
+			
+			if (period.size() != 0) {
+				for (int j=0; j<period.size(); j=j+2) {
+					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", period.get(j), period.get(j+1), true, true);
+					query.add(periodQuery, BooleanClause.Occur.SHOULD);
+				}
+			}
 			
 			BooleanQuery description = new BooleanQuery();
 			for (String q:result) {
@@ -130,6 +139,7 @@ public class SearchFiles {
 			}
 			query.add(title, BooleanClause.Occur.SHOULD);
 			
+
 			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null);
 			
 			/*
@@ -221,6 +231,31 @@ public class SearchFiles {
 		}
 
 		return autores;
+	}
+	
+	
+	public static ArrayList<Integer> getPeriod() {
+		ArrayList<Integer> period = new ArrayList<Integer>();
+		for (int i=0; i<result.size(); i++) {
+			try {
+				int date = Integer.parseInt(result.get(i));
+				if (result.get(i).length() == 4) {
+					
+					try {
+						int date2 = Integer.parseInt(result.get(i+1));
+						if (result.get(i+1).length() == 4) {
+							period.add(date);
+							period.add(date2);
+							i++;
+						}
+					}
+					catch (NumberFormatException e) {}
+				}
+			}
+			catch (NumberFormatException e) {}
+		}
+		
+		return period;
 	}
 
 	/**
