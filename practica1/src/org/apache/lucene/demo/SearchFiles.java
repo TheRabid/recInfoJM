@@ -56,7 +56,7 @@ public class SearchFiles {
 			System.exit(0);
 		}
 
-		String index = "index";
+		String index = "indexLuceneTrabajo";
 		String field = "contents";
 		String queries = null;
 		int repeat = 0;
