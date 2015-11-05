@@ -41,6 +41,8 @@ import org.xml.sax.SAXException;
 
 /** Simple command-line based search demo. */
 public class SearchFiles {
+	
+	private static List<String> result;
 
 	private SearchFiles() {
 	}
@@ -99,16 +101,27 @@ public class SearchFiles {
 			QueryParser parser = new QueryParser(Version.LUCENE_44, field, analyzer);
 			System.out.println(input);
 
-			List<String> result = spanisher(input);
+			result = spanisher(input);
 
 			System.out.println(result);
 			ArrayList<String> autores = getCreator(input);
-
+			System.out.println(result);
+			
+			BooleanQuery author = new BooleanQuery();
 			for (String autor : autores) {
 				TermQuery queryStr = new TermQuery(new Term("creator", autor));
-				query.add(queryStr, BooleanClause.Occur.SHOULD);
+				author.add(queryStr, BooleanClause.Occur.SHOULD);
 				System.out.println(autor);
 			}
+			query.add(author, BooleanClause.Occur.MUST);
+
+			
+			BooleanQuery description = new BooleanQuery();
+			for (String q:result) {
+				TermQuery queryStr = new TermQuery(new Term("description", q));
+				description.add(queryStr, BooleanClause.Occur.SHOULD);
+			}
+			query.add(description, BooleanClause.Occur.MUST);
 
 			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null, identifiers[i]);
 
@@ -123,6 +136,7 @@ public class SearchFiles {
 	public static ArrayList<String> getCreator(String input) {
 		ArrayList<String> autores = new ArrayList<String>();
 		if (input.contains("autor")) {
+			result.remove("autor"); 
 			String autorInput = input.split("autor")[1];
 			String autor;
 			boolean encontrado = false;
@@ -131,11 +145,16 @@ public class SearchFiles {
 			Scanner s = new Scanner(autorInput);
 			while (s.hasNext() && !fin) {
 				String word = s.next();
+				
+				List<String> sp = spanisher(word);
+				if (sp.size() != 0 ) { result.remove(sp.get(0)); }
+				
 				if (word.charAt(0) == Character.toUpperCase(word.charAt(0))) {
 					autores.add(spanisher(word).get(0));
 					encontrado = true;
 				} else {
 					if (encontrado) {
+						if (sp.size() != 0 ) { result.add(sp.get(0)); }
 						fin = true;
 					}
 				}
@@ -149,7 +168,7 @@ public class SearchFiles {
 	 * Parse the input
 	 */
 	public static List<String> spanisher(String input) {
-		Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
+		Analyzer analyzer = customSpanishAnalyzer();
 		List<String> result = new ArrayList<String>();
 		try {
 			TokenStream stream = analyzer.tokenStream(null, new StringReader(input));
