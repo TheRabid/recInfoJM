@@ -387,7 +387,7 @@ public class SearchFiles {
 	public static Analyzer customSpanishAnalyzer() {
 		CharArraySet stopSet = CharArraySet.copy(Version.LATEST, SpanishAnalyzer.getDefaultStopSet());
 		stopSet.add("interesado");
-		stopSet.add("relacion");
+		stopSet.add("relación");
 		stopSet.add("interesan");
 		stopSet.add("cuyo");
 		stopSet.add("gustaria");
