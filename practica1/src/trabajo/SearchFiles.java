@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -106,6 +107,7 @@ public class SearchFiles {
 			System.out.println(result);
 			ArrayList<String> autores = getCreator(input);
 			ArrayList<Integer> period = getPeriod();
+			ArrayList<Integer> years = getLastDocs();
 			
 			if (autores.size() != 0) {
 				BooleanQuery author = new BooleanQuery();
@@ -122,6 +124,14 @@ public class SearchFiles {
 				for (int j=0; j<period.size(); j=j+2) {
 					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", period.get(j), period.get(j+1), true, true);
 					query.add(periodQuery, BooleanClause.Occur.SHOULD);
+				}
+			}
+			
+			if (years.size() != 0) {
+				for (int j=0; j<years.size(); j=j+2) {
+					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", currentYear-years.get(j), currentYear, true, true);
+					query.add(periodQuery, BooleanClause.Occur.MUST);
 				}
 			}
 			
@@ -225,6 +235,23 @@ public class SearchFiles {
 		}
 		return result;
 	}
+	
+	
+	public static ArrayList<Integer> getLastDocs() {
+		ArrayList<Integer> years = new ArrayList<Integer>();
+		
+		for (int i=0; i<result.size(); i++) {
+			try {
+				int year = Integer.parseInt(result.get(i));
+				if ((i+1) < result.size() && result.get(i+1).equalsIgnoreCase("año") && (i-1)>=0 && result.get(i-1).equalsIgnoreCase("ultim")) {
+					years.add(year);
+				}
+			}
+			catch (NumberFormatException e) {}
+		}
+		
+		return years;
+	}
 
 	/**
 	 * This demonstrates a typical paging search scenario, where the search
@@ -320,6 +347,7 @@ public class SearchFiles {
 				System.out.print(need + "\t");
 				System.out.print(path
 						.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
+				System.out.print("\t" + hits[i].score);
 				System.out.println();
 			}
 
