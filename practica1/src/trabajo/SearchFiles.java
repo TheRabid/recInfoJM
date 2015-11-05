@@ -1,23 +1,5 @@
 package trabajo;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,6 +20,7 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -45,6 +28,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -70,7 +54,7 @@ public class SearchFiles {
 			System.exit(0);
 		}
 
-		String index = "index";
+		String index = "indexLuceneTrabajo";
 		String infoNeeds = "infoNeedsFile.xml";
 		String output = "resultsFile";
 		String field = "contents";
@@ -120,10 +104,12 @@ public class SearchFiles {
 			ArrayList<String> autores = getCreator(input);
 
 			for (String autor:autores) {
-				Query queryStr = parser.parse("creator:" + autor);
+				TermQuery queryStr = new TermQuery(new Term("creator", autor));
 				query.add(queryStr, BooleanClause.Occur.SHOULD);
 				System.out.println(autor);
 			}
+			
+			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null);
 			
 			/*
 			 * if (line == null || line.length() == -1) { //Exit } else { line =
@@ -295,7 +281,7 @@ public class SearchFiles {
 	 * Math.min(numTotalHits, start + hitsPerPage); } } }
 	 */
 
-	public static void doPagingSearch(BufferedReader in, IndexSearcher searcher, Query query, int hitsPerPage,
+	public static void doPagingSearch(IndexSearcher searcher, Query query, int hitsPerPage,
 			boolean raw, boolean interactive) throws IOException {
 
 		// Collect enough docs to show 5 pages
@@ -321,8 +307,7 @@ public class SearchFiles {
 			if (path != null) {
 				// System.out.println((i + 1) + ". " + path);
 				System.out.print(
-						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]
-								.substring(0, 2));
+						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
 				if (i != end - 1)
 					System.out.print(", ");
 				else {
