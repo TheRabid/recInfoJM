@@ -21,6 +21,7 @@ import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -28,6 +29,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -102,12 +104,14 @@ public class SearchFiles {
 			System.out.println(result);
 			ArrayList<String> autores = getCreator(input);
 
-			for (String autor : autores) {
-				Query queryStr = parser.parse("creator:" + autor);
+			for (String autor:autores) {
+				TermQuery queryStr = new TermQuery(new Term("creator", autor));
 				query.add(queryStr, BooleanClause.Occur.SHOULD);
 				System.out.println(autor);
 			}
-
+			
+			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null);
+			
 			/*
 			 * if (line == null || line.length() == -1) { //Exit } else { line =
 			 * line.trim(); if (line.length() != 0) {
@@ -304,8 +308,7 @@ public class SearchFiles {
 			if (path != null) {
 				// System.out.println((i + 1) + ". " + path);
 				System.out.print(
-						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]
-								.substring(0, 2));
+						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
 				if (i != end - 1)
 					System.out.print(", ");
 				else {
@@ -380,7 +383,12 @@ public class SearchFiles {
 
 	public static Analyzer customSpanishAnalyzer() {
 		CharArraySet stopSet = CharArraySet.copy(Version.LATEST, SpanishAnalyzer.getDefaultStopSet());
-		stopSet.add("interes");
+		stopSet.add("interesado");
+		stopSet.add("relacion");
+		stopSet.add("interesan");
+		stopSet.add("cuyo");
+		stopSet.add("gustaria");
+		stopSet.add("quiero");
 		Analyzer analyzer = new SpanishAnalyzer(Version.LATEST, stopSet);
 		return analyzer;
 	}
