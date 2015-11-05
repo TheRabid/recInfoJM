@@ -320,6 +320,7 @@ public class SearchFiles {
 				System.out.print(need + "\t");
 				System.out.print(path
 						.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
+				System.out.print("\t"+hits[i].score);
 				System.out.println();
 			}
 
