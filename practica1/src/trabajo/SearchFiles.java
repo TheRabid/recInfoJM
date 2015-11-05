@@ -35,6 +35,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -119,12 +120,12 @@ public class SearchFiles {
 			System.out.println(result);
 			ArrayList<String> autores = getCreator(input);
 
-			for (String autor:autores) {
+			for (String autor : autores) {
 				Query queryStr = parser.parse("creator:" + autor);
 				query.add(queryStr, BooleanClause.Occur.SHOULD);
 				System.out.println(autor);
 			}
-			
+
 			/*
 			 * if (line == null || line.length() == -1) { //Exit } else { line =
 			 * line.trim(); if (line.length() != 0) {
@@ -393,5 +394,12 @@ public class SearchFiles {
 		returned.add(identifiers);
 		returned.add(needs);
 		return returned;
+	}
+
+	public static Analyzer customSpanishAnalyzer() {
+		CharArraySet stopSet = CharArraySet.copy(Version.LATEST, SpanishAnalyzer.getDefaultStopSet());
+		stopSet.add("interes");
+		Analyzer analyzer = new SpanishAnalyzer(Version.LATEST, stopSet);
+		return analyzer;
 	}
 }
