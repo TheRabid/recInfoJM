@@ -123,6 +123,13 @@ public class SearchFiles {
 			}
 			query.add(description, BooleanClause.Occur.MUST);
 			
+			BooleanQuery title = new BooleanQuery();
+			for (String q:result) {
+				TermQuery queryStr = new TermQuery(new Term("title", q));
+				title.add(queryStr, BooleanClause.Occur.SHOULD);
+			}
+			query.add(title, BooleanClause.Occur.SHOULD);
+			
 			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null);
 			
 			/*
