@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -108,7 +109,6 @@ public class SearchFiles {
 		// Index
 		IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
 		IndexSearcher searcher = new IndexSearcher(reader);
-		Analyzer analyzer = new SpanishAnalyzer(Version.LATEST);
 
 		/*
 		 * Aquí va el codigo para obtener un String con las queries
@@ -118,12 +118,14 @@ public class SearchFiles {
 		String[] identifiers = results.get(0);
 		String[] needs = results.get(1);
 
-		System.out.println("length: " + needs.length);
 		for (int i = 0; i < needs.length; i++) {
-
+			String input = needs[i].replace("\n", "").replace("\t", "").trim();
+			System.out.println(input);
+			
+			Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
 			List<String> result = new ArrayList<String>();
 			try {
-				TokenStream stream = analyzer.tokenStream(null, needs[i]);
+				TokenStream stream = analyzer.tokenStream(null, new StringReader(input));
 				stream.reset();
 				while (stream.incrementToken()) {
 					result.add(stream.getAttribute(CharTermAttribute.class).toString());
@@ -186,6 +188,9 @@ public class SearchFiles {
 			 * 
 			 * reader.close(); } }
 			 */
+			
+			System.out.println();
+			System.out.println();
 		}
 	}
 
