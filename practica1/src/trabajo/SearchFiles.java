@@ -20,12 +20,9 @@ package trabajo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -39,16 +36,8 @@ import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DoubleField;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -119,24 +108,23 @@ public class SearchFiles {
 		String[] needs = results.get(1);
 
 		for (int i = 0; i < needs.length; i++) {
-			String input = needs[i].replace("\n", "").replace("\t", "").trim();
-			System.out.println(input);
-			
+			String input = needs[i].replace("\n", " ").replace(".", "").replace("\t", "").trim();
+			BooleanQuery query = new BooleanQuery();
 			Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
-			List<String> result = new ArrayList<String>();
-			try {
-				TokenStream stream = analyzer.tokenStream(null, new StringReader(input));
-				stream.reset();
-				while (stream.incrementToken()) {
-					result.add(stream.getAttribute(CharTermAttribute.class).toString());
-				}
-			} catch (IOException e) {
-				// not thrown b/c we're using a string reader...
-				throw new RuntimeException(e);
-			}
+			QueryParser parser = new QueryParser(Version.LUCENE_44, field, analyzer);
+			System.out.println(input);
+
+			List<String> result = spanisher(input);
 
 			System.out.println(result);
+			ArrayList<String> autores = getCreator(input);
 
+			for (String autor:autores) {
+				Query queryStr = parser.parse("creator:" + autor);
+				query.add(queryStr, BooleanClause.Occur.SHOULD);
+				System.out.println(autor);
+			}
+			
 			/*
 			 * if (line == null || line.length() == -1) { //Exit } else { line =
 			 * line.trim(); if (line.length() != 0) {
@@ -188,10 +176,57 @@ public class SearchFiles {
 			 * 
 			 * reader.close(); } }
 			 */
-			
+
 			System.out.println();
 			System.out.println();
 		}
+	}
+
+	/**
+	 * Search capitalized words after the word 'author'
+	 */
+	public static ArrayList<String> getCreator(String input) {
+		ArrayList<String> autores = new ArrayList<String>();
+		if (input.contains("autor")) {
+			String autorInput = input.split("autor")[1];
+			String autor;
+			boolean encontrado = false;
+			boolean fin = false;
+
+			Scanner s = new Scanner(autorInput);
+			while (s.hasNext() && !fin) {
+				String word = s.next();
+				if (word.charAt(0) == Character.toUpperCase(word.charAt(0))) {
+					autores.add(spanisher(word).get(0));
+					encontrado = true;
+				} else {
+					if (encontrado) {
+						fin = true;
+					}
+				}
+			}
+		}
+
+		return autores;
+	}
+
+	/**
+	 * Parse the input
+	 */
+	public static List<String> spanisher(String input) {
+		Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
+		List<String> result = new ArrayList<String>();
+		try {
+			TokenStream stream = analyzer.tokenStream(null, new StringReader(input));
+			stream.reset();
+			while (stream.incrementToken()) {
+				result.add(stream.getAttribute(CharTermAttribute.class).toString());
+			}
+		} catch (IOException e) {
+			// not thrown b/c we're using a string reader...
+			throw new RuntimeException(e);
+		}
+		return result;
 	}
 
 	/**
@@ -333,10 +368,10 @@ public class SearchFiles {
 		NodeList mList = doc.getElementsByTagName("informationNeed");
 		String[] identifiers = new String[mList.getLength()];
 		String[] needs = new String[mList.getLength()];
-		
+
 		for (int temp2 = 0; temp2 < mList.getLength(); temp2++) {
 			Node mNode = mList.item(temp2);
-			
+
 			if (mNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element mElement = (Element) mNode;
 
