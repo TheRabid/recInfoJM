@@ -140,7 +140,7 @@ public class SearchFiles {
 			query.add(title, BooleanClause.Occur.SHOULD);
 			
 
-			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null);
+			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null,identifiers[i]);
 			
 
 			System.out.println();
@@ -292,8 +292,8 @@ public class SearchFiles {
 	 * Math.min(numTotalHits, start + hitsPerPage); } } }
 	 */
 
-	public static void doPagingSearch(IndexSearcher searcher, Query query, int hitsPerPage,
-			boolean raw, boolean interactive) throws IOException {
+	public static void doPagingSearch(IndexSearcher searcher, Query query, int hitsPerPage, boolean raw,
+			boolean interactive, String need) throws IOException {
 
 		// Collect enough docs to show 5 pages
 		TopDocs results = searcher.search(query, 5 * hitsPerPage);
@@ -306,6 +306,7 @@ public class SearchFiles {
 		int end = Math.min(numTotalHits, hitsPerPage);
 
 		end = hits.length;
+		System.out.println();
 
 		for (int i = start; i < end; i++) {
 			if (raw) { // output raw format
@@ -316,18 +317,10 @@ public class SearchFiles {
 			Document doc = searcher.doc(hits[i].doc);
 			String path = doc.get("path");
 			if (path != null) {
-				// System.out.println((i + 1) + ". " + path);
-				System.out.print(
-						path.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
-				if (i != end - 1)
-					System.out.print(", ");
-				else {
-					System.out.println();
-					System.out.println();
-				}
-			} else {
-				// System.out.println((i + 1) + ". " + "No path for this
-				// document");
+				System.out.print(need + "\t");
+				System.out.print(path
+						.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
+				System.out.println();
 			}
 
 		}
