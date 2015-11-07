@@ -9,11 +9,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
@@ -23,7 +21,6 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -33,7 +30,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -41,15 +37,14 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /** Simple command-line based search demo. */
-public class SearchFiles {
-	
+public class Buscador {
+
 	private static List<String> result;
 
-	private SearchFiles() {
+	private Buscador() {
 	}
 
 	/** Simple command-line based search demo. */
-	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws Exception {
 		String usage = "Uso de este programa:\tjava trabajo.SearchFiles -index <indexPath>"
 				+ " -infoNeeds <infoNeedsFile> -output <resultsFile>";
@@ -61,11 +56,7 @@ public class SearchFiles {
 		String index = "index";
 		String infoNeeds = "infoNeedsFile.xml";
 		String output = "resultsFile";
-		String field = "contents";
-		String queries = null;
-		int repeat = 0;
 		boolean raw = false;
-		String queryString = null;
 		int hitsPerPage = 10;
 
 		for (int i = 0; i < args.length; i++) {
@@ -98,8 +89,6 @@ public class SearchFiles {
 		for (int i = 0; i < needs.length; i++) {
 			String input = needs[i].replace("\n", " ").replace(".", "").replace("\t", "").trim();
 			BooleanQuery query = new BooleanQuery();
-			Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
-			QueryParser parser = new QueryParser(Version.LUCENE_44, field, analyzer);
 			System.out.println(input);
 
 			result = spanisher(input);
@@ -108,10 +97,10 @@ public class SearchFiles {
 			ArrayList<String> autores = getCreator(input);
 			ArrayList<Integer> period = getPeriod();
 			ArrayList<Integer> years = getLastDocs();
-			
+
 			if (autores.size() != 0) {
 				BooleanQuery author = new BooleanQuery();
-				for (String autor:autores) {
+				for (String autor : autores) {
 					TermQuery queryStr = new TermQuery(new Term("creator", autor));
 					author.add(queryStr, BooleanClause.Occur.SHOULD);
 					System.out.println(autor);
@@ -119,42 +108,40 @@ public class SearchFiles {
 				query.add(author, BooleanClause.Occur.MUST);
 			}
 
-			
 			if (period.size() != 0) {
-				for (int j=0; j<period.size(); j=j+2) {
-					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", period.get(j), period.get(j+1), true, true);
-					query.add(periodQuery, BooleanClause.Occur.SHOULD);
+				for (int j = 0; j < period.size(); j = j + 2) {
+					if (period.get(j) >= 2008) {
+						NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", period.get(j),
+								period.get(j + 1), true, true);
+						query.add(periodQuery, BooleanClause.Occur.MUST);
+					}
 				}
 			}
-			
+
 			if (years.size() != 0) {
-				for (int j=0; j<years.size(); j=j+2) {
+				for (int j = 0; j < years.size(); j = j + 2) {
 					int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date", currentYear-years.get(j), currentYear, true, true);
+					NumericRangeQuery<Integer> periodQuery = NumericRangeQuery.newIntRange("date",
+							currentYear - years.get(j), currentYear, true, true);
 					query.add(periodQuery, BooleanClause.Occur.MUST);
 				}
 			}
-			
+
 			BooleanQuery description = new BooleanQuery();
-			for (String q:result) {
+			for (String q : result) {
 				TermQuery queryStr = new TermQuery(new Term("description", q));
 				description.add(queryStr, BooleanClause.Occur.SHOULD);
 			}
 			query.add(description, BooleanClause.Occur.MUST);
-			
+
 			BooleanQuery title = new BooleanQuery();
-			for (String q:result) {
+			for (String q : result) {
 				TermQuery queryStr = new TermQuery(new Term("title", q));
 				title.add(queryStr, BooleanClause.Occur.SHOULD);
 			}
-			query.add(title, BooleanClause.Occur.SHOULD);
-			
+			query.add(title, BooleanClause.Occur.MUST);
 
-			doPagingSearch(searcher, query, hitsPerPage, raw, queries == null && queryString == null,identifiers[i]);
-			
-
-			System.out.println();
-			System.out.println();
+			doPagingSearch(searcher, query, hitsPerPage, raw, identifiers[i],false);
 		}
 	}
 
@@ -164,56 +151,58 @@ public class SearchFiles {
 	public static ArrayList<String> getCreator(String input) {
 		ArrayList<String> autores = new ArrayList<String>();
 		if (input.contains("autor")) {
-			result.remove("autor"); 
+			result.remove("autor");
 			String autorInput = input.split("autor")[1];
-			String autor;
 			boolean encontrado = false;
 			boolean fin = false;
 
 			Scanner s = new Scanner(autorInput);
 			while (s.hasNext() && !fin) {
 				String word = s.next();
-				
+
 				List<String> sp = spanisher(word);
-				if (sp.size() != 0 ) { result.remove(sp.get(0)); }
-				
+				if (sp.size() != 0) {
+					result.remove(sp.get(0));
+				}
+
 				if (word.charAt(0) == Character.toUpperCase(word.charAt(0))) {
 					autores.add(spanisher(word).get(0));
 					encontrado = true;
 				} else {
 					if (encontrado) {
-						if (sp.size() != 0 ) { result.add(sp.get(0)); }
+						if (sp.size() != 0) {
+							result.add(sp.get(0));
+						}
 						fin = true;
 					}
 				}
 			}
+			s.close();
 		}
-
 		return autores;
 	}
-	
-	
+
 	public static ArrayList<Integer> getPeriod() {
 		ArrayList<Integer> period = new ArrayList<Integer>();
-		for (int i=0; i<result.size(); i++) {
+		for (int i = 0; i < result.size(); i++) {
 			try {
 				int date = Integer.parseInt(result.get(i));
 				if (result.get(i).length() == 4) {
-					
+
 					try {
-						int date2 = Integer.parseInt(result.get(i+1));
-						if (result.get(i+1).length() == 4) {
+						int date2 = Integer.parseInt(result.get(i + 1));
+						if (result.get(i + 1).length() == 4) {
 							period.add(date);
 							period.add(date2);
 							i++;
 						}
+					} catch (NumberFormatException e) {
 					}
-					catch (NumberFormatException e) {}
 				}
+			} catch (NumberFormatException e) {
 			}
-			catch (NumberFormatException e) {}
 		}
-		
+
 		return period;
 	}
 
@@ -221,7 +210,7 @@ public class SearchFiles {
 	 * Parse the input
 	 */
 	public static List<String> spanisher(String input) {
-		Analyzer analyzer = customSpanishAnalyzer();
+		Analyzer analyzer = new CustomSpanishAnalyzer();
 		List<String> result = new ArrayList<String>();
 		try {
 			TokenStream stream = analyzer.tokenStream(null, new StringReader(input));
@@ -231,25 +220,27 @@ public class SearchFiles {
 			}
 		} catch (IOException e) {
 			// not thrown b/c we're using a string reader...
+			analyzer.close();
 			throw new RuntimeException(e);
 		}
+		analyzer.close();
 		return result;
 	}
-	
-	
+
 	public static ArrayList<Integer> getLastDocs() {
 		ArrayList<Integer> years = new ArrayList<Integer>();
-		
-		for (int i=0; i<result.size(); i++) {
+
+		for (int i = 0; i < result.size(); i++) {
 			try {
 				int year = Integer.parseInt(result.get(i));
-				if ((i+1) < result.size() && result.get(i+1).equalsIgnoreCase("año") && (i-1)>=0 && result.get(i-1).equalsIgnoreCase("ultim")) {
+				if ((i + 1) < result.size() && result.get(i + 1).equalsIgnoreCase("año") && (i - 1) >= 0
+						&& result.get(i - 1).equalsIgnoreCase("ultim")) {
 					years.add(year);
 				}
+			} catch (NumberFormatException e) {
 			}
-			catch (NumberFormatException e) {}
 		}
-		
+
 		return years;
 	}
 
@@ -319,8 +310,8 @@ public class SearchFiles {
 	 * Math.min(numTotalHits, start + hitsPerPage); } } }
 	 */
 
-	public static void doPagingSearch(IndexSearcher searcher, Query query, int hitsPerPage, boolean raw,
-			boolean interactive, String need) throws IOException {
+	public static void doPagingSearch(IndexSearcher searcher, Query query, int hitsPerPage, boolean raw, String need, boolean debug)
+			throws IOException {
 
 		// Collect enough docs to show 5 pages
 		TopDocs results = searcher.search(query, 5 * hitsPerPage);
@@ -343,7 +334,7 @@ public class SearchFiles {
 
 			Document doc = searcher.doc(hits[i].doc);
 			String path = doc.get("path");
-			if (path != null) {
+			if (path != null && debug) {
 				System.out.print(need + "\t");
 				System.out.print(path
 						.split(Pattern.quote(File.separator))[path.split(Pattern.quote(File.separator)).length - 1]);
@@ -413,14 +404,8 @@ public class SearchFiles {
 	}
 
 	public static Analyzer customSpanishAnalyzer() {
-		CharArraySet stopSet = CharArraySet.copy(Version.LATEST, SpanishAnalyzer.getDefaultStopSet());
-		stopSet.add("interesado");
-		stopSet.add("relación");
-		stopSet.add("interesan");
-		stopSet.add("cuyo");
-		stopSet.add("gustaria");
-		stopSet.add("quiero");
-		Analyzer analyzer = new SpanishAnalyzer(Version.LATEST, stopSet);
+		CharArraySet stopSet = CharArraySet.copy(SpanishAnalyzer.getDefaultStopSet());
+		Analyzer analyzer = new SpanishAnalyzer(stopSet);
 		return analyzer;
 	}
 }

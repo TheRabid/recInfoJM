@@ -1,51 +1,29 @@
 package trabajo;
 
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.document.DoubleField;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.StringField;
-import org.apache.lucene.document.TextField;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntField;
+import org.apache.lucene.document.LongField;
+import org.apache.lucene.document.StringField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Index all text files under a directory.
@@ -53,18 +31,19 @@ import javax.xml.parsers.ParserConfigurationException;
  * This is a command-line application demonstrating simple Lucene indexing. Run
  * it with no command-line arguments for usage information.
  */
-public class IndexFiles {
+public class Indexador {
 
-	private IndexFiles() {
+	private Indexador() {
 	}
 
-	/** Index all text files under a directory. */
+	/** 
+	 * Método main de la clase IndexFiles
+	 * Index all text files under a directory.
+	 * */
 	public static void main(String[] args) {
-		String usage = "java org.apache.lucene.demo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
-				+ "This indexes the documents in DOCS_PATH, creating a Lucene index"
-				+ "in INDEX_PATH that can be searched with SearchFiles";
-		String indexPath = "i";
-		String docsPath = null;
+		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH]\n\n";
+		String indexPath = "index";
+		String docsPath = "docs";
 		boolean create = true;
 		for (int i = 0; i < args.length; i++) {
 			if ("-index".equals(args[i])) {
@@ -73,14 +52,7 @@ public class IndexFiles {
 			} else if ("-docs".equals(args[i])) {
 				docsPath = args[i + 1];
 				i++;
-			} else if ("-update".equals(args[i])) {
-				create = false;
 			}
-		}
-
-		if (docsPath == null) {
-			System.err.println("Usage: " + usage);
-			System.exit(1);
 		}
 
 		final File docDir = new File(docsPath);
@@ -93,10 +65,9 @@ public class IndexFiles {
 		Date start = new Date();
 		try {
 			System.out.println("Indexing to directory '" + indexPath + "'...");
-
 			Directory dir = FSDirectory.open(new File(indexPath));
-			Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
-			IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_44, analyzer);
+			Analyzer analyzer = new CustomSpanishAnalyzer();
+			IndexWriterConfig iwc = new IndexWriterConfig(Version.LATEST, analyzer);
 
 			if (create) {
 				// Create a new index in the directory, removing any
@@ -156,7 +127,7 @@ public class IndexFiles {
 	 * @throws IOException
 	 *             If there is a low-level I/O error
 	 */
-	static void indexDocs(IndexWriter writer, File file) throws IOException {
+	public static void indexDocs(IndexWriter writer, File file) throws IOException {
 		// do not try to index files that cannot be read
 		if (file.canRead()) {
 			if (file.isDirectory()) {
@@ -290,7 +261,7 @@ public class IndexFiles {
 
 		// Date
 		if (doc.getElementsByTagName("dc:date").item(0) != null) {
-			doc1.add(new StringField("date", doc.getElementsByTagName("dc:date").item(0).getTextContent(),
+			doc1.add(new IntField("date", Integer.parseInt(doc.getElementsByTagName("dc:date").item(0).getTextContent().trim()),
 					Field.Store.YES));
 		}
 
