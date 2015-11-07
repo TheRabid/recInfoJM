@@ -26,25 +26,31 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * Index all text files under a directory.
- * <p>
- * This is a command-line application demonstrating simple Lucene indexing. Run
- * it with no command-line arguments for usage information.
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         La clase Indexador implementa metodos para indexar los documentos de
+ *         una coleccion determinada para mas adelante realizar busquedas sobre
+ *         esos indices creados
  */
 public class Indexador {
 
-	private Indexador() {
-	}
-
-	/** 
-	 * Método main de la clase IndexFiles
-	 * Index all text files under a directory.
-	 * */
+	/**
+	 * Método main de la clase IndexFiles. Indexa todos los documentos pasados
+	 * por parametro (docs_path) en index_path.
+	 * 
+	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-docs DOCS_PATH]
+	 */
 	public static void main(String[] args) {
 		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH]\n\n";
 		String indexPath = "index";
 		String docsPath = "docs";
 		boolean create = true;
+		if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
+			System.out.println(usage);
+			System.exit(0);
+		}
+
 		for (int i = 0; i < args.length; i++) {
 			if ("-index".equals(args[i])) {
 				indexPath = args[i + 1];
@@ -57,66 +63,45 @@ public class Indexador {
 
 		final File docDir = new File(docsPath);
 		if (!docDir.exists() || !docDir.canRead()) {
-			System.out.println("Document directory '" + docDir.getAbsolutePath()
-					+ "' does not exist or is not readable, please check the path");
+			System.out.println("El directorio '" + docDir.getAbsolutePath()
+					+ "' no existe o no se puede leer. Por favor compruebelo de nuevo");
 			System.exit(1);
 		}
 
 		Date start = new Date();
 		try {
-			System.out.println("Indexing to directory '" + indexPath + "'...");
+			System.out.println("Indexando '" + indexPath + "'...");
 			Directory dir = FSDirectory.open(new File(indexPath));
 			Analyzer analyzer = new CustomSpanishAnalyzer();
 			IndexWriterConfig iwc = new IndexWriterConfig(Version.LATEST, analyzer);
 
 			if (create) {
-				// Create a new index in the directory, removing any
-				// previously indexed documents:
+				// Crea un nuevo indice borrando los anteriores
 				iwc.setOpenMode(OpenMode.CREATE);
 			} else {
-				// Add new documents to an existing index:
+				// Anade documentos al indice creado
 				iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			}
-
-			// Optional: for better indexing performance, if you
-			// are indexing many documents, increase the RAM
-			// buffer. But if you do this, increase the max heap
-			// size to the JVM (eg add -Xmx512m or -Xmx1g):
-			//
-			// iwc.setRAMBufferSizeMB(256.0);
 
 			IndexWriter writer = new IndexWriter(dir, iwc);
 			indexDocs(writer, docDir);
 
-			// NOTE: if you want to maximize search performance,
-			// you can optionally call forceMerge here. This can be
-			// a terribly costly operation, so generally it's only
-			// worth it when your index is relatively static (ie
-			// you're done adding documents to it):
-			//
-			// writer.forceMerge(1);
-
 			writer.close();
 
 			Date end = new Date();
-			System.out.println(end.getTime() - start.getTime() + " total milliseconds");
+			System.out.println(end.getTime() - start.getTime() + " milisegundos");
 
 		} catch (IOException e) {
-			System.out.println(" caught a " + e.getClass() + "\n with message: " + e.getMessage());
+			System.out.println("Excepcion " + e.getClass() + "\n con el mensaje: " + e.getMessage());
 		}
 	}
 
 	/**
-	 * Indexes the given file using the given writer, or if a directory is
-	 * given, recurses over files and directories found under the given
-	 * directory.
 	 * 
-	 * NOTE: This method indexes one document per input file. This is slow. For
-	 * good throughput, put multiple documents into your input file(s). An
-	 * example of this is in the benchmark module, which can create "line doc"
-	 * files, one document per line, using the <a href=
-	 * "../../../../../contrib-benchmark/org/apache/lucene/benchmark/byTask/tasks/WriteLineDocTask.html"
-	 * >WriteLineDocTask</a>.
+	 * Metodo indexDocs de la clase Indexador. Indexa el archivo pasado por
+	 * parametro usando el IndexWriter pasado tambien por parametro o, si se ha
+	 * pasado por parametro un directorio, itera a lo largo de todos los
+	 * ficheros de dicho directorio
 	 * 
 	 * @param writer
 	 *            Writer to the index where the given file/dir info will be
@@ -127,12 +112,12 @@ public class Indexador {
 	 * @throws IOException
 	 *             If there is a low-level I/O error
 	 */
-	public static void indexDocs(IndexWriter writer, File file) throws IOException {
-		// do not try to index files that cannot be read
+	private static void indexDocs(IndexWriter writer, File file) throws IOException {
+		// No intentar indexar ficheros que no se pueden leer
 		if (file.canRead()) {
 			if (file.isDirectory()) {
 				String[] files = file.list();
-				// an IO error could occur
+				// Posibilidad de que de error IO
 				if (files != null) {
 					for (int i = 0; i < files.length; i++) {
 						indexDocs(writer, new File(file, files[i]));
@@ -144,63 +129,34 @@ public class Indexador {
 				try {
 					fis = new FileInputStream(file);
 				} catch (FileNotFoundException fnfe) {
-					// at least on windows, some temporary files raise this
-					// exception with an "access denied" message
-					// checking if the file can be read doesn't help
+					// En windows algunos ficheros temporales dan esta excepcion
 					return;
 				}
 
 				try {
 
-					// make a new, empty document
+					// Crear un nuevo Document vacio
 					Document doc = new Document();
 
-					// Add the path of the file as a field named "path". Use a
-					// field that is indexed (i.e. searchable), but don't
-					// tokenize
-					// the field into separate words and don't index term
-					// frequency
-					// or positional information:
+					// Anadir el path del fichero como un campo llamado "path"
+					// sin tokenizarlo
 					Field pathField = new StringField("path", file.getPath(), Field.Store.YES);
 					doc.add(pathField);
 
-					// Add the last modified date of the file a field named
-					// "modified".
-					// Use a LongField that is indexed (i.e. efficiently
-					// filterable with
-					// NumericRangeFilter). This indexes to milli-second
-					// resolution, which
-					// is often too fine. You could instead create a number
-					// based on
-					// year/month/day/hour/minutes/seconds, down the resolution
-					// you require.
-					// For example the long value 2011021714 would mean
-					// February 17, 2011, 2-3 PM.
+					// Anadir tambien el campo "modified" con la fecha de
+					// modificacion del fichero
 					doc.add(new LongField("modified", file.lastModified(), Field.Store.YES));
 
-					// Add the contents of the file to a field named "contents".
-					// Specify a Reader,
-					// so that the text of the file is tokenized and indexed,
-					// but not stored.
-					// Note that FileReader expects the file to be in UTF-8
-					// encoding.
-					// If that's not the case searching for special characters
-					// will fail.
-					// doc.add(new TextField("contents", new BufferedReader(new
-					// InputStreamReader(fis, "UTF-8"))));
+					// Parsear el documento
 					documentParser(file, doc);
 
 					if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-						// New index, so we just add the document (no old
-						// document can be there):
+						// Si el indice es nuevo anadimos sin mas
 						System.out.println("adding " + file);
 						writer.addDocument(doc);
 					} else {
-						// Existing index (an old copy of this document may have
-						// been indexed) so
-						// we use updateDocument instead to replace the old one
-						// matching the exact
-						// path, if present:
+						// Indice existente, por lo que actualizamos el
+						// documento
 						System.out.println("updating " + file);
 						writer.updateDocument(new Term("path", file.getPath()), doc);
 					}
@@ -214,7 +170,23 @@ public class Indexador {
 		}
 	}
 
-	public static void documentParser(File f, Document doc1)
+	/**
+	 * 
+	 * Metodo documentParser de la clase Indexador. Parsea el documento XML a la
+	 * busqueda de etiquetas que se puedan analizar y ubicar como campos en el
+	 * indice correspondiente
+	 * 
+	 * @param f
+	 *            El fichero a parsear
+	 * @param doc1
+	 *            El documento al que anadir los campos
+	 * 
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */
+
+	private static void documentParser(File f, Document doc1)
 			throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -261,7 +233,8 @@ public class Indexador {
 
 		// Date
 		if (doc.getElementsByTagName("dc:date").item(0) != null) {
-			doc1.add(new IntField("date", Integer.parseInt(doc.getElementsByTagName("dc:date").item(0).getTextContent().trim()),
+			doc1.add(new IntField("date",
+					Integer.parseInt(doc.getElementsByTagName("dc:date").item(0).getTextContent().trim()),
 					Field.Store.YES));
 		}
 
@@ -312,5 +285,11 @@ public class Indexador {
 			doc1.add(new StringField("language", doc.getElementsByTagName("dc:rights").item(0).getTextContent(),
 					Field.Store.YES));
 		}
+	}
+
+	/**
+	 * Constructor (privado, puesto que no se puede instanciar)
+	 */
+	private Indexador() {
 	}
 }

@@ -14,12 +14,19 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.tartarus.snowball.ext.SpanishStemmer;
 
+/**
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         La clase CustomSpanishAnalyzer implementa una version propia del
+ *         SpanishAnalyzer estandar de Lucene
+ */
 public class CustomSpanishAnalyzer extends Analyzer {
 
-	private final static String[] CUSTOM_STOP_SET = {"interes","trabaj","llam","relacion","cuy",
-			"llam","period","gust","sab","articul","relacionad","hech","englob",
-			"tesis","trat","quier","document","encontr","situ","element","pertenezc"};
-	
+	private final static String[] CUSTOM_STOP_SET = { "interes", "trabaj", "llam", "relacion", "cuy", "llam", "period",
+			"gust", "sab", "articul", "relacionad", "hech", "englob", "tesis", "trat", "quier", "document", "encontr",
+			"situ", "element", "pertenezc" };
+
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName, Reader reader) {
 		final Tokenizer source = new StandardTokenizer(reader);
@@ -28,7 +35,7 @@ public class CustomSpanishAnalyzer extends Analyzer {
 		result = new StopFilter(result, SpanishAnalyzer.getDefaultStopSet());
 		result = new SnowballFilter(result, new SpanishStemmer());
 		CharArraySet stopSet = new CharArraySet(0, false);
-		for(String a: CUSTOM_STOP_SET)
+		for (String a : CUSTOM_STOP_SET)
 			stopSet.add(a);
 		result = new StopFilter(result, stopSet);
 		return new TokenStreamComponents(source, result);

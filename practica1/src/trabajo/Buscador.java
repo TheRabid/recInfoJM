@@ -73,9 +73,9 @@ public class Buscador {
 
 		/* Variables por defecto */
 		String index = "index";
-		String infoNeeds = "infoNeedsFile.xml";
-		String output = "resultsFile.txt";
-		int totalDocs = 10;
+		String infoNeeds = "defaultNeedsFile.xml";
+		String output = "defaultResultsFile.txt";
+		int totalDocs = 20000;
 
 		/* Busqueda de los parametros del programa */
 		for (int i = 0; i < args.length; i++) {
@@ -276,12 +276,14 @@ public class Buscador {
 			TermQuery queryStr = new TermQuery(new Term("description", q));
 			descriptionTitle.add(queryStr, BooleanClause.Occur.SHOULD);
 		}
+		query.add(descriptionTitle,BooleanClause.Occur.MUST);
 
+		BooleanQuery t = new BooleanQuery();
 		for (String q : result) {
 			TermQuery queryStr = new TermQuery(new Term("title", q));
-			descriptionTitle.add(queryStr, BooleanClause.Occur.SHOULD);
+			t.add(queryStr, BooleanClause.Occur.SHOULD);
 		}
-		query.add(descriptionTitle, BooleanClause.Occur.MUST);
+		query.add(t, BooleanClause.Occur.SHOULD);
 
 		return query;
 	}
