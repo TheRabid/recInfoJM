@@ -25,7 +25,7 @@ public class CustomSpanishAnalyzer extends Analyzer {
 
 	private final static String[] CUSTOM_STOP_SET = { "interes", "trabaj", "llam", "relacion", "cuy", "llam", "period",
 			"gust", "sab", "articul", "relacionad", "hech", "englob", "tesis", "trat", "quier", "document", "encontr",
-			"situ", "element", "pertenezc" };
+			"situ", "element", "pertenezc","mund"};
 
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName, Reader reader) {

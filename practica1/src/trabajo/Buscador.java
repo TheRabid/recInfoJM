@@ -283,7 +283,7 @@ public class Buscador {
 			TermQuery queryStr = new TermQuery(new Term("title", q));
 			t.add(queryStr, BooleanClause.Occur.SHOULD);
 		}
-		query.add(t, BooleanClause.Occur.SHOULD);
+		query.add(t, BooleanClause.Occur.MUST);
 
 		return query;
 	}
