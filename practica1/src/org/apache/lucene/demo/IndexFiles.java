@@ -58,12 +58,14 @@ import javax.xml.parsers.ParserConfigurationException;
  * This is a command-line application demonstrating simple Lucene indexing. Run
  * it with no command-line arguments for usage information.
  */
+@SuppressWarnings("unused")
 public class IndexFiles {
 
 	private IndexFiles() {
 	}
 
 	/** Index all text files under a directory. */
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
 		String usage = "java org.apache.lucene.demo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
 				+ "This indexes the documents in DOCS_PATH, creating a Lucene index"

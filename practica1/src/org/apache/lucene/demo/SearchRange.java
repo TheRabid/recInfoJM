@@ -45,12 +45,14 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 /** Simple command-line based search demo. */
+@SuppressWarnings("unused")
 public class SearchRange {
 
 	private SearchRange() {
 	}
 
 	/** Simple command-line based search demo. */
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) throws Exception {
 		String usage = "Usage:\tjava org.apache.lucene.demo.SearchFiles [-index dir] [-field f] [-repeat n] [-queries file] [-query string] [-raw] [-paging hitsPerPage]\n\nSee http://lucene.apache.org/core/4_1_0/demo/ for details.";
 		if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
