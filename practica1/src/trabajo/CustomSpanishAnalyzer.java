@@ -15,8 +15,8 @@ import org.apache.lucene.analysis.util.CharArraySet;
 import org.tartarus.snowball.ext.SpanishStemmer;
 
 /**
- * @author Alberto Sabater Bailon (546297)
  * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * @author Alberto Sabater Bailon (546297)
  * 
  *         La clase CustomSpanishAnalyzer implementa una version propia del
  *         SpanishAnalyzer estandar de Lucene
