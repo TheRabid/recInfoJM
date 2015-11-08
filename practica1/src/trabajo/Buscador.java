@@ -55,7 +55,7 @@ public class Buscador {
 
 	// Booleano para debug. Si es true muestra informacion adicional por
 	// pantalla
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	/**
 	 * Metodo main de la clase Buscador. Uso de este programa: java
