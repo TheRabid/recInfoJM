@@ -55,7 +55,7 @@ public class Buscador {
 
 	// Booleano para debug. Si es true muestra informacion adicional por
 	// pantalla
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	/**
 	 * Metodo main de la clase Buscador. Uso de este programa: java
@@ -226,6 +226,7 @@ public class Buscador {
 		ArrayList<Integer> period = getPeriods();
 		ArrayList<Integer> years = getLastNYearsDocs();
 
+		System.out.println(result);
 		/*
 		 * Si en la busqueda se detecta autor o director, anadir TermQuerys
 		 * buscando en el campo "creator"
@@ -323,7 +324,7 @@ public class Buscador {
 				} else {
 					if (encontrado) {
 						if (sp.size() != 0) {
-							result.add(sp.get(0));
+							//result.add(sp.get(0));
 						}
 						fin = true;
 					}
@@ -383,9 +384,12 @@ public class Buscador {
 		for (int i = 0; i < result.size(); i++) {
 			try {
 				int year = Integer.parseInt(result.get(i));
-				if ((i + 1) < result.size() && result.get(i + 1).equalsIgnoreCase("año") && (i - 1) >= 0
+				if ((i + 1) < result.size() && result.get(i + 1).equalsIgnoreCase("años") && (i - 1) >= 0
 						&& result.get(i - 1).equalsIgnoreCase("ultim")) {
 					years.add(year);
+					result.remove(String.valueOf(year));
+					result.remove(String.valueOf(result.get(i - 1)));
+					result.remove(String.valueOf(result.get(i - 1)));
 				}
 			} catch (NumberFormatException e) {
 			}
