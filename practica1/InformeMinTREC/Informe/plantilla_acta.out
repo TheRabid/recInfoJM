@@ -1,5 +1,7 @@
 \BOOKMARK [1][-]{section.1}{Arquitectura del software desarrollado}{}% 1
 \BOOKMARK [1][-]{section.2}{T\351cnicas empleadas}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{T\351cnicas empleadas en el Indexador}{section.2}% 3
-\BOOKMARK [1][-]{section.3}{Puntos tratados}{}% 4
-\BOOKMARK [1][-]{section.4}{Otros puntos}{}% 5
+\BOOKMARK [2][-]{subsection.2.1}{T\351cnicas empleadas en Indexador}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{T\351cnicas empleadas en Buscador}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Algoritmo empleado para el ranking}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Resultados obtenidos}{}% 6
+\BOOKMARK [1][-]{section.4}{Otros puntos}{}% 7

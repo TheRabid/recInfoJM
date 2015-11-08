@@ -35,6 +35,12 @@ import org.xml.sax.SAXException;
  */
 public class Indexador {
 
+	/* Atributos privados */
+
+	// Booleano para debug. Si es true muestra informacion adicional por
+	// pantalla
+	private static final boolean DEBUG = false;
+
 	/**
 	 * Método main de la clase IndexFiles. Indexa todos los documentos pasados
 	 * por parametro (docs_path) en index_path.
@@ -70,7 +76,8 @@ public class Indexador {
 
 		Date start = new Date();
 		try {
-			System.out.println("Indexando '" + indexPath + "'...");
+			if (DEBUG)
+				System.out.println("Indexando '" + indexPath + "'...");
 			Directory dir = FSDirectory.open(new File(indexPath));
 			Analyzer analyzer = new CustomSpanishAnalyzer();
 			IndexWriterConfig iwc = new IndexWriterConfig(Version.LATEST, analyzer);
@@ -89,7 +96,8 @@ public class Indexador {
 			writer.close();
 
 			Date end = new Date();
-			System.out.println(end.getTime() - start.getTime() + " milisegundos");
+			if (DEBUG)
+				System.out.println(end.getTime() - start.getTime() + " milisegundos");
 
 		} catch (IOException e) {
 			System.out.println("Excepcion " + e.getClass() + "\n con el mensaje: " + e.getMessage());
@@ -152,12 +160,14 @@ public class Indexador {
 
 					if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
 						// Si el indice es nuevo anadimos sin mas
-						System.out.println("adding " + file);
+						if (DEBUG)
+							System.out.println("adding " + file);
 						writer.addDocument(doc);
 					} else {
 						// Indice existente, por lo que actualizamos el
 						// documento
-						System.out.println("updating " + file);
+						if (DEBUG)
+							System.out.println("updating " + file);
 						writer.updateDocument(new Term("path", file.getPath()), doc);
 					}
 
