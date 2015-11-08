@@ -110,7 +110,7 @@ public class Indexador {
 	 *            The file to index, or the directory to recurse into to find
 	 *            files to index
 	 * @throws IOException
-	 *             If there is a low-level I/O error
+	 *             If there is an I/O error
 	 */
 	private static void indexDocs(IndexWriter writer, File file) throws IOException {
 		// No intentar indexar ficheros que no se pueden leer
