@@ -23,6 +23,7 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.LongField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -324,6 +325,47 @@ public class IndexFiles {
 				if (eElement.getElementsByTagName("dc:language").item(0) != null) {
 					doc1.add(new StringField("language",
 							eElement.getElementsByTagName("dc:language").item(0).getTextContent(), Field.Store.YES));
+				}
+
+				// Issued
+				if (eElement.getElementsByTagName("dcterms:issued").item(0) != null) {
+					String[] issued = eElement.getElementsByTagName("dcterms:issued").item(0).getTextContent()
+							.split("-");
+					if (issued.length == 3) {
+						doc1.add(new StringField("issued", issued[0] + issued[1] + issued[2], Field.Store.YES));
+					}
+				}
+
+				// Issued
+				if (eElement.getElementsByTagName("dcterms:created").item(0) != null) {
+					//String[] issued = eElement.getElementsByTagName("dcterms:created").item(0).getTextContent()
+					//		.split("-");
+					doc1.add(new StringField("created", eElement.getElementsByTagName("dcterms:created").item(0).getTextContent()
+							.replace("-", ""), Field.Store.YES));
+				}
+
+				// Begin End
+				if (eElement.getElementsByTagName("dcterms:temporal").item(0) != null && !eElement
+						.getElementsByTagName("dcterms:temporal").item(0).getTextContent().equalsIgnoreCase("none")) {
+					String[] fields = eElement.getElementsByTagName("dcterms:temporal").item(0).getTextContent()
+							.split(";");
+					for (String s:fields) System.out.println(s);
+					String[] b = fields[0].split("=");
+					
+					int begin, end;
+					if (b.length == 1) {
+						begin = Integer.parseInt(b[0].replace("-","")); 
+						doc1.add(new IntField("begin", begin*10000 + 0101, Field.Store.YES));
+					}
+					else {
+						begin = Integer.parseInt(fields[1].split("=")[1].replace("-", ""));
+						doc1.add(new IntField("begin", begin, Field.Store.YES));
+					}
+					
+					if (fields.length == 2) {
+						end = Integer.parseInt(fields[1].split("=")[1].replace("-", ""));
+						doc1.add(new IntField("end", end, Field.Store.YES));
+					}
 				}
 
 				// BoundingBox

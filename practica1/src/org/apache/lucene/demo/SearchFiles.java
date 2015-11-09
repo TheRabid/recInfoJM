@@ -57,7 +57,7 @@ public class SearchFiles {
 			System.exit(0);
 		}
 
-		String index = "indexLuceneTrabajo";
+		String index = "index";
 		String field = "contents";
 		String queries = null;
 		int repeat = 0;
@@ -155,6 +155,44 @@ public class SearchFiles {
 					System.out.println("line" + line);
 					Query queryStr = parser.parse(line);
 					query.add(queryStr, BooleanClause.Occur.SHOULD);
+				}
+			}
+			else  if (line.startsWith("temporal")) {
+				Scanner s = new Scanner(line);
+				System.out.println("line: " + line);
+				String input = line.split(":")[1].replace("[","").replace("]","").replace(" ","").toLowerCase();
+				System.out.println("input: " + input);
+
+				String[] fields = input.split("to");
+				if (fields.length == 2) {
+					int b = Integer.parseInt(fields[0]);
+					int e = Integer.parseInt(fields[1]);
+					
+					if (b < 10000) b = b *10000 + 101;
+					if (e < 10000) e = e *10000 + 101;
+	
+					System.out.println(b + "  " + e);
+					
+					// valor este de la caja de consulta
+					// Xmin <= east
+					NumericRangeQuery<Integer> temporal1 = NumericRangeQuery.newIntRange("begin", b, e, true, true);
+					NumericRangeQuery<Integer> temporal2 = NumericRangeQuery.newIntRange("end", b, e, true, true);
+
+					query.add(temporal1, BooleanClause.Occur.MUST);
+					query.add(temporal2, BooleanClause.Occur.MUST);
+				}
+				else if (fields.length == 1) {
+					int b = Integer.parseInt(fields[0]);
+					
+					if (b < 10000) b = b *10000 + 101;
+	
+					System.out.println(b);
+					
+					// valor este de la caja de consulta
+					// Xmin <= east
+					NumericRangeQuery<Integer> temporal1 = NumericRangeQuery.newIntRange("begin", b, null, true, true);
+					
+					query.add(temporal1, BooleanClause.Occur.MUST);
 				}
 			}
 			else {
