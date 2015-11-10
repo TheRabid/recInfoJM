@@ -53,8 +53,15 @@ public class Evaluation {
 		r = DataExtractor.getResultados(results);
 		
 		for(int i = 1; i<infNeeds+1;i++){
+			// Actualizar true y false positives y negatives
 			updateNumbers(i);
+			
+			// Precision
 			System.out.println(getPrecision(i));
+			System.out.println(tp);
+			System.out.println(fp);
+			System.out.println(fn);
+			System.out.println(tn);
 		}
 
 	}
@@ -90,15 +97,6 @@ public class Evaluation {
 	}
 
 	private static double getPrecision(int infNeed) {
-		// Calcular total recuperados
-		int total = 0;
-		for (Result res : r) {
-			if (res.getInformation_need() == infNeed) {
-				total++;
-			}
-		}
-
-		// Calcular los recuperados y relevantes
-		return (double) (tp/total);
+		return tp/((double)(tp+fp));
 	}
 }

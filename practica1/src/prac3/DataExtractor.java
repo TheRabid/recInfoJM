@@ -14,6 +14,7 @@ public class DataExtractor {
 		File f = new File(ficheroQRels);
 		Scanner s = new Scanner(f);
 		ArrayList<QRel> returned = new ArrayList<QRel>();
+		int fila = 1;
 
 		// Iterar hasta encontrar todos los juicios de relevancia
 		while (s.hasNextLine()) {
@@ -23,10 +24,17 @@ public class DataExtractor {
 				int rel = s.nextInt();
 				QRel a = new QRel(infNeed, docId, rel);
 				returned.add(a);
+				fila++;
 			} catch (InputMismatchException e) {
-				System.err.println("Fichero qrels mal formado");
+				if(s.hasNextLine())
+					s.nextLine();
+				System.err.println("Fila "+fila+" del fichero qrels mal formada");
+				fila++;
 			} catch (NoSuchElementException e) {
-				System.err.println("Fichero qrels mal formado");
+				if(s.hasNextLine())
+					s.nextLine();
+				System.err.println("Fila "+fila+" del fichero qrels mal formada");
+				fila++;
 			}
 		}
 		s.close();
@@ -38,6 +46,7 @@ public class DataExtractor {
 		File f = new File(ficheroResultados);
 		Scanner s = new Scanner(f);
 		ArrayList<Result> returned = new ArrayList<Result>();
+		int fila = 1;
 
 		// Iterar hasta encontrar todos los juicios de relevancia
 		while (s.hasNextLine()) {
@@ -46,8 +55,17 @@ public class DataExtractor {
 				int docId = s.nextInt();
 				Result a = new Result(infNeed, docId);
 				returned.add(a);
+				fila++;
 			} catch (InputMismatchException e) {
-				System.err.println("Fichero results mal formado");
+				if(s.hasNextLine())
+					s.nextLine();
+				System.err.println("Fila "+fila+" del fichero qrels mal formada");
+				fila++;
+			} catch (NoSuchElementException e) {
+				if(s.hasNextLine())
+					s.nextLine();
+				System.err.println("Fila "+fila+" del fichero qrels mal formada");
+				fila++;
 			}
 		}
 		s.close();
