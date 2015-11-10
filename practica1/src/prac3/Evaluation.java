@@ -18,8 +18,8 @@ public class Evaluation {
 	private static int fp = 0;
 	private static int fn = 0;
 	private static int tn = 0;
-	
-	
+	private static int infNeeds = 2;
+
 	public static void main(String[] args) throws Exception {
 		/* Comprobar que se ha invocado bien al programa */
 		String usage = "Uso de este programa:\tjava prac3.Evaluation -qrels <qRelsFileName>"
@@ -47,34 +47,58 @@ public class Evaluation {
 				i++;
 			}
 		}
-		
+
 		/* Funcionamiento del programa */
 		q = DataExtractor.getQRels(qrels);
 		r = DataExtractor.getResultados(results);
 		
-		
+		for(int i = 1; i<infNeeds+1;i++){
+			updateNumbers(i);
+			System.out.println(getPrecision(i));
+		}
+
 	}
-	
-	private static void updateNumbers(int infNeed){
-		for(QRel qrel : q){
-			if(infNeed==qrel.getInformation_need()){
-				for(Result resul : r){
-					
+
+	private static void updateNumbers(int infNeed) {
+		tp=0;
+		fp=0;
+		tn=0;
+		fn=0;
+		for (QRel qrel : q) {
+			if (infNeed == qrel.getInformation_need()) {
+				boolean found = false;
+				for (Result resul : r) {
+					if (infNeed == resul.getInformation_need() && qrel.getDocument_id() == resul.getDocument_id()) {
+						found = true;
+						if(qrel.getRelevancy()==1)
+							tp++;
+						else
+							fp++;
+					}
+					if(found){
+						break;
+					}
+				}
+				if(!found){
+					if(qrel.getRelevancy()==1)
+						fn++;
+					else
+						tn++;
 				}
 			}
 		}
 	}
-	
-	private static double getPrecision(int infNeed){
+
+	private static double getPrecision(int infNeed) {
 		// Calcular total recuperados
 		int total = 0;
-		for(Result res : r){
-			if(res.getInformation_need()==infNeed){
+		for (Result res : r) {
+			if (res.getInformation_need() == infNeed) {
 				total++;
 			}
 		}
-		
+
 		// Calcular los recuperados y relevantes
-		return 0;
+		return (double) (tp/total);
 	}
 }
