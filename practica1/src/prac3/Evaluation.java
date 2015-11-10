@@ -1,5 +1,7 @@
 package prac3;
 
+import java.util.ArrayList;
+
 /**
  * @author Alberto Sabater Bailon (546297)
  * @author Jaime Ruiz-Borau Vizarraga (546751)
@@ -38,5 +40,6 @@ public class Evaluation {
 		}
 		
 		/* Funcionamiento del programa */
+		ArrayList<QRel> juicios = DataExtractor.getQRels(qrels);
 	}
 }
