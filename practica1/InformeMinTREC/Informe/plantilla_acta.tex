@@ -60,7 +60,6 @@
 \begin{itemize}
 	\item \textbf{Correcto espaciado de la necesidad de información}:
 	\\ Tal y como se proporcionó el fichero XML de necesidades de información, existían saltos de línea y tabuladores innecesarios que se optó por suprimir antes de procesar la necesidad para convertirla en consulta. 
-	\paragraph{}Asimismo, sabiendo que el analizador de Lucene toma por distintos tokens la misma palabra seguida de un punto que sin el punto (para Lucene son diferentes tokens los términos 'agua' y 'agua.'), también se optó por suprimir de la necesidad inicial todos los puntos.
 	\item \textbf{Lematización de la consulta}:
 	\\ Utilizando el CustomSpanishAnalyzer mencionado anteriormente, toda la necesidad de información queda lematizada a las raíces más importantes de cada palabra, suprimiendo palabras innecesarias (StopWords). 
 	\paragraph{}Concretamente, el CustomSpanishAnalyzer diseñado, hereda las StopWords del \textbf{SpanishAnalyzer} por defecto de Lucene, y añade las siguientes: \textit{'interes', 'trabaj', 'llam', 'relacion', 'cuy', 'llam', 'period', 'gust', 'sab', 'articul', 'relacionad', 'hech', 'englob', 'tesis', 'trat', 'quier', 'document', 'encontr', 'situ', 'element', 'pertenezc'} y \textit{'mund'}.
@@ -88,7 +87,25 @@
 \paragraph{}La idea general es que cuanto más veces aparece cada término de una query en un documento respecto del número de veces que ese término aparece en el resto de documentos de la colección, más relevante es ese documento para esa query.
 Usa el modelo booleano para reducir el número de documentos devueltos haciendo uso de la lógica booleana en la specificación de la query.
 \section{Resultados obtenidos}
+\textbf{1.-'Me interesan los trabajos en relación con el mundo de la musica y el sonido cuyo autor o director se llame Javier.'}
+\paragraph{}El resultado de esta consulta únicamente devuelve 2 ficheros, que son altamente relevantes. Ambos tratan de música y en ambos, 'Javier' es su autor. El resultado es tan breve porque únicamente se muestran los ficheros cuyo autor es Javier.
+\paragraph{} \textbf{2.-'Estoy interesado en el periodo histórico de la Guerra de Independencia (1808-1814). Me gustaría saber qué trabajos o artículos hay relacionados con este hecho englobados en la historia de España'}
+\paragraph{}La ejecución de esta consulta devuelve 192 documentos. Los primeros si que hacen referencia al periodo histórico de la Guerra de la Independencia de España, luego aparecen textos relativos a otras guerras o periodos históricos de España.
 
-\section{Otros puntos}
+\paragraph{}\textbf{3.-'Tesis que traten de energías renovables, en el período de 2010 a 2015.'}
+\paragraph{}La ejecución de esta consulta, devuelve 67 documentos. Todos ellos hablan en mayor o menor medida de las energías, siendo los primeros los que hacen más incapié en las energías renovables. Todos los documentos sevueltos, han sido publicados entre el año 2010 y 2015.
 
+\paragraph{}\textbf{4.-'Quiero documentos sobre desarrollo de videojuegos o diseño de personajes en los últimos 5 años.'}
+\paragraph{}La ejecución de esta consulta devuleve 490 documentos, de los cuales, os primeros si que hacen referencia al mundo de los videojuegos, el resto hacen referencia a temas de diseño o cualquier otro desarrollo. Todos los documentos han sido publicados en los últimos 5 años.
+
+\paragraph{}\textbf{5.-'Me gustaría encontrar construcciones arquitectónicas situadas en España con elementos decorativos que pertenezcan tanto a la Edad Media como a la época gótica y cuyo estado de conservación sea óptimo.'}
+\paragraph{}La ejecución de esta consulta devuelve 329 documentos, de temas muy dispares, siendo los primeros los centrados en temas de arquitectura o Edad Media.
+
+\section{Referencias y documentación adicional}
+\begin{itemize}
+	\item Estándar Open Archives Initiative
+	\newline \url{https://www.openarchives.org/}
+	\item Algoritmo de ranking empleado por Lucene
+	\newline \url{https://lucene.apache.org/core/3_5_0/scoring.html}
+\end{itemize}
 \end{document}

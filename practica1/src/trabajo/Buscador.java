@@ -108,7 +108,7 @@ public class Buscador {
 		for (int i = 0; i < needs.length; i++) {
 
 			// Arreglar la necesidad de informacion
-			String input = needs[i].replace("\n", " ").replace(".", "").replace("\t", "").trim();
+			String input = needs[i].replace("\n", " ").replace("\t", "").trim();
 			if (DEBUG)
 				System.out.println(input);
 
