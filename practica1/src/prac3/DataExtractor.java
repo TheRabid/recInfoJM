@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class DataExtractor {
@@ -23,6 +24,8 @@ public class DataExtractor {
 				QRel a = new QRel(infNeed, docId, rel);
 				returned.add(a);
 			} catch (InputMismatchException e) {
+				System.err.println("Fichero qrels mal formado");
+			} catch (NoSuchElementException e) {
 				System.err.println("Fichero qrels mal formado");
 			}
 		}
