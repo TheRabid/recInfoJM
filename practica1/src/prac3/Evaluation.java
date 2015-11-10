@@ -11,6 +11,10 @@ import java.util.ArrayList;
 
 public class Evaluation {
 
+	// Atributos privados
+	private static ArrayList<QRel> q;
+	private static ArrayList<Result> r;
+	
 	public static void main(String[] args) throws Exception {
 		/* Comprobar que se ha invocado bien al programa */
 		String usage = "Uso de este programa:\tjava prac3.Evaluation -qrels <qRelsFileName>"
@@ -40,6 +44,14 @@ public class Evaluation {
 		}
 		
 		/* Funcionamiento del programa */
-		ArrayList<QRel> juicios = DataExtractor.getQRels(qrels);
+		q = DataExtractor.getQRels(qrels);
+		r = DataExtractor.getResultados(results);
+		
+		
+	}
+	
+	private static double getPrecision(int infNeed){
+		
+		return 0;
 	}
 }
