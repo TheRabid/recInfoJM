@@ -14,6 +14,11 @@ public class Evaluation {
 	// Atributos privados
 	private static ArrayList<QRel> q;
 	private static ArrayList<Result> r;
+	private static int tp = 0;
+	private static int fp = 0;
+	private static int fn = 0;
+	private static int tn = 0;
+	
 	
 	public static void main(String[] args) throws Exception {
 		/* Comprobar que se ha invocado bien al programa */
@@ -50,8 +55,26 @@ public class Evaluation {
 		
 	}
 	
+	private static void updateNumbers(int infNeed){
+		for(QRel qrel : q){
+			if(infNeed==qrel.getInformation_need()){
+				for(Result resul : r){
+					
+				}
+			}
+		}
+	}
+	
 	private static double getPrecision(int infNeed){
+		// Calcular total recuperados
+		int total = 0;
+		for(Result res : r){
+			if(res.getInformation_need()==infNeed){
+				total++;
+			}
+		}
 		
+		// Calcular los recuperados y relevantes
 		return 0;
 	}
 }
