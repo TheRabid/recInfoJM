@@ -194,6 +194,7 @@ public class SearchFiles {
 					
 					query.add(temporal1, BooleanClause.Occur.MUST);
 				}
+				s.close();
 			}
 			else {
 				Query queryStr = parser.parse(line);
