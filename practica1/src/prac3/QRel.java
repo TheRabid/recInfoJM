@@ -1,6 +1,6 @@
 package prac3;
 
-public class QrelFile {
+public class QRel {
 
 	private int information_need;
 	private int document_id;
@@ -30,7 +30,7 @@ public class QrelFile {
 		this.relevancy = relevancy;
 	}
 
-	public QrelFile(int information_need, int document_id, int relevancy) {
+	public QRel(int information_need, int document_id, int relevancy) {
 		this.information_need = information_need;
 		this.document_id = document_id;
 		this.relevancy = relevancy;

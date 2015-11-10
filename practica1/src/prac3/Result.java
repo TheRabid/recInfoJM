@@ -1,11 +1,11 @@
 package prac3;
 
-public class ResultFile {
+public class Result {
 
 	private int information_need;
 	private int document_id;
 
-	public ResultFile(int information_need, int document_id) {
+	public Result(int information_need, int document_id) {
 		this.information_need = information_need;
 		this.document_id = document_id;
 	}
