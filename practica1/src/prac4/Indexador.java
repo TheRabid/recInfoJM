@@ -133,6 +133,7 @@ public class Indexador {
 	 * @throws IOException
 	 *             If there is an I/O error
 	 */
+	@SuppressWarnings("unused")
 	private static void indexDocs(IndexWriter writer, File file) throws IOException {
 		// No intentar indexar ficheros que no se pueden leer
 		if (file.canRead()) {
@@ -194,7 +195,7 @@ public class Indexador {
 	}
 	
 	
-	public static void indexDump(ArrayList<Par> dump, IndexWriter writer) throws IOException, SAXException, ParserConfigurationException {
+	private static void indexDump(ArrayList<Par> dump, IndexWriter writer) throws IOException, SAXException, ParserConfigurationException {
 		
 		for (Par par:dump) {
 			// Crear un nuevo Document vacio
