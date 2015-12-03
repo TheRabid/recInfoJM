@@ -4,7 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,6 +51,7 @@ public class Indexador {
 	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-docs DOCS_PATH]
 	 */
 	public static void main(String[] args) {
+
 		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH]\n\n";
 		String indexPath = "index";
 		String docsPath = "docs";
@@ -86,7 +90,7 @@ public class Indexador {
 				// Crea un nuevo indice borrando los anteriores
 				iwc.setOpenMode(OpenMode.CREATE);
 			} else {
-				// Anade documentos al indice creado
+				// Anade documentos a indice creado
 				iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
 			}
 
@@ -99,9 +103,14 @@ public class Indexador {
 			if (DEBUG)
 				System.out.println(end.getTime() - start.getTime() + " milisegundos");
 
-		} catch (IOException e) {
+		} catch (
+
+		IOException e)
+
+		{
 			System.out.println("Excepcion " + e.getClass() + "\n con el mensaje: " + e.getMessage());
 		}
+
 	}
 
 	/**
@@ -295,6 +304,48 @@ public class Indexador {
 			doc1.add(new StringField("language", doc.getElementsByTagName("dc:rights").item(0).getTextContent(),
 					Field.Store.YES));
 		}
+	}
+
+	private static ArrayList<Par> parseDump(String path) throws FileNotFoundException {
+		/* Initialize objects */
+		File f = new File(path);
+		Scanner s = new Scanner(f);
+		boolean nameFound = false;
+		boolean contentFound = false;
+		Par temp = new Par(null, null);
+		ArrayList<Par> returned = new ArrayList<Par>();
+
+		while (s.hasNextLine()) {
+			String line = s.nextLine();
+			int index = line.indexOf(':');
+
+			if (index > 0) {
+				/* Name found */
+				if (line.substring(0, index).equals("url")) {
+					// Get the name
+					int index2 = line.lastIndexOf('/');
+					String name = line.substring(index2);
+					temp.docName = name;
+					nameFound = true;
+				}
+
+				/* Content found */
+				if (line.substring(0, index).equals("Content") && line.length() - 1 == index) {
+					String newLine = s.nextLine();
+					temp.content = newLine;
+					contentFound = true;
+				}
+			}
+			/* If both found add to arraylist */
+			if (nameFound && contentFound) {
+				nameFound = false;
+				contentFound = false;
+				returned.add(temp);
+				temp = new Par(null, null);
+			}
+		}
+		s.close();
+		return returned;
 	}
 
 	/**
