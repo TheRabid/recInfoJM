@@ -57,7 +57,7 @@ public class Indexador {
 		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-dump dumpPath]\n\n";
 
 		String indexPath = "indexDump";
-		String dumpPath = "dump";
+		String dumpPath = "dumps/dump";
 		boolean create = true;
 		if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
 			System.out.println(usage);
