@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -49,12 +50,14 @@ public class Indexador {
 	 * por parametro (docs_path) en index_path.
 	 * 
 	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-docs DOCS_PATH]
+	 * @throws SAXException 
+	 * @throws ParserConfigurationException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws SAXException, ParserConfigurationException {
+		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-dump dumpPath]\n\n";
 
-		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-docs DOCS_PATH]\n\n";
-		String indexPath = "index";
-		String docsPath = "docs";
+		String indexPath = "indexDump";
+		String dumpPath = "dump";
 		boolean create = true;
 		if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
 			System.out.println(usage);
@@ -66,12 +69,12 @@ public class Indexador {
 				indexPath = args[i + 1];
 				i++;
 			} else if ("-docs".equals(args[i])) {
-				docsPath = args[i + 1];
+				dumpPath = args[i + 1];
 				i++;
 			}
 		}
 
-		final File docDir = new File(docsPath);
+		final File docDir = new File(dumpPath);
 		if (!docDir.exists() || !docDir.canRead()) {
 			System.out.println("El directorio '" + docDir.getAbsolutePath()
 					+ "' no existe o no se puede leer. Por favor compruebelo de nuevo");
@@ -95,7 +98,8 @@ public class Indexador {
 			}
 
 			IndexWriter writer = new IndexWriter(dir, iwc);
-			indexDocs(writer, docDir);
+			ArrayList<Par> dumpFiles = parseDump(dumpPath);
+			indexDump(dumpFiles, writer);
 
 			writer.close();
 
@@ -188,7 +192,162 @@ public class Indexador {
 			}
 		}
 	}
+	
+	
+	public static void indexDump(ArrayList<Par> dump, IndexWriter writer) throws IOException, SAXException, ParserConfigurationException {
+		
+		for (Par par:dump) {
+			// Crear un nuevo Document vacio
+			System.out.println(par.docName);
+			System.out.println(par.content);
+			Document doc = new Document();
+			
+			String path = par.docName;
 
+			// Anadir el path del fichero como un campo llamado "path"
+			// sin tokenizarlo
+			Field pathField = new StringField("path", path, Field.Store.YES);
+			doc.add(pathField);
+
+			// Anadir tambien el campo "modified" con la fecha de
+			// modificacion del fichero
+//				doc.add(new LongField("modified", file.lastModified(), Field.Store.YES));
+
+			// Parsear el documento
+			documentParserDump(par.content, doc);
+
+			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+				// Si el indice es nuevo anadimos sin mas
+				if (DEBUG)
+					System.out.println("adding " + path);
+				writer.addDocument(doc);
+			} else {
+				// Indice existente, por lo que actualizamos el
+				// documento
+				if (DEBUG)
+					System.out.println("updating " + path);
+				writer.updateDocument(new Term("path", path), doc);
+			} 
+		}
+	}
+
+
+	/**
+	 * 
+	 * Metodo documentParser de la clase Indexador. Parsea el documento XML a la
+	 * busqueda de etiquetas que se puedan analizar y ubicar como campos en el
+	 * indice correspondiente
+	 * 
+	 * @param f
+	 *            El fichero a parsear
+	 * @param doc1
+	 *            El documento al que anadir los campos
+	 * 
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */
+	private static void documentParserDump(String xml, Document doc1)
+			throws ParserConfigurationException, SAXException, IOException {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+
+		InputSource is = new InputSource(new StringReader(xml));
+		org.w3c.dom.Document doc = builder.parse(is);
+		
+		// Title
+		if (doc.getElementsByTagName("dc:title").item(0) != null) {
+			doc1.add(new TextField("title", doc.getElementsByTagName("dc:title").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Creator
+		if (doc.getElementsByTagName("dc:creator").item(0) != null) {
+			doc1.add(new TextField("creator", doc.getElementsByTagName("dc:creator").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Subject
+		if (doc.getElementsByTagName("dc:subject").item(0) != null) {
+			doc1.add(new TextField("subject", doc.getElementsByTagName("dc:subject").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Description
+		if (doc.getElementsByTagName("dc:description").item(0) != null) {
+			doc1.add(new TextField("description", doc.getElementsByTagName("dc:description").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Publisher
+		if (doc.getElementsByTagName("dc:publisher").item(0) != null) {
+			doc1.add(new TextField("publisher", doc.getElementsByTagName("dc:publisher").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Contributor
+		if (doc.getElementsByTagName("dc:contributor").item(0) != null) {
+			doc1.add(new TextField("contributor", doc.getElementsByTagName("dc:contributor").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Date
+		if (doc.getElementsByTagName("dc:date").item(0) != null) {
+			doc1.add(new IntField("date",
+					Integer.parseInt(doc.getElementsByTagName("dc:date").item(0).getTextContent().trim()),
+					Field.Store.YES));
+		}
+
+		// Type
+		if (doc.getElementsByTagName("dc:type").item(0) != null) {
+			doc1.add(new StringField("type", doc.getElementsByTagName("dc:type").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Format
+		if (doc.getElementsByTagName("dc:format").item(0) != null) {
+			doc1.add(new StringField("format", doc.getElementsByTagName("dc:format").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Identifier
+		if (doc.getElementsByTagName("dc:identifier").item(0) != null) {
+			doc1.add(new StringField("identifier", doc.getElementsByTagName("dc:identifier").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Source
+		if (doc.getElementsByTagName("dc:source").item(0) != null) {
+			doc1.add(new StringField("source", doc.getElementsByTagName("dc:source").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Language
+		if (doc.getElementsByTagName("dc:language").item(0) != null) {
+			doc1.add(new StringField("language", doc.getElementsByTagName("dc:language").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Relation
+		if (doc.getElementsByTagName("dc:relation").item(0) != null) {
+			doc1.add(new StringField("relation", doc.getElementsByTagName("dc:relation").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Coverage
+		if (doc.getElementsByTagName("dc:coverage").item(0) != null) {
+			doc1.add(new StringField("coverage", doc.getElementsByTagName("dc:coverage").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+
+		// Rights
+		if (doc.getElementsByTagName("dc:rights").item(0) != null) {
+			doc1.add(new StringField("language", doc.getElementsByTagName("dc:rights").item(0).getTextContent(),
+					Field.Store.YES));
+		}
+	}
+
+	
 	/**
 	 * 
 	 * Metodo documentParser de la clase Indexador. Parsea el documento XML a la
