@@ -332,8 +332,14 @@ public class Indexador {
 				/* Content found */
 				if (line.substring(0, index).equals("Content") && line.length() - 1 == index) {
 					String newLine = s.nextLine();
-					temp.content = newLine;
-					contentFound = true;
+					if (!newLine.startsWith("<?xml")) {
+						// Esto no es
+						temp = new Par(null, null);
+						nameFound = false;
+					} else {
+						temp.content = newLine;
+						contentFound = true;
+					}
 				}
 			}
 			/* If both found add to arraylist */
