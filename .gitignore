@@ -19,3 +19,5 @@ practica1/.classpath
 practica1/.project
 
 *.class
+*.class
+practica1/bin/org/apache/lucene/demo/SearchFiles.class
