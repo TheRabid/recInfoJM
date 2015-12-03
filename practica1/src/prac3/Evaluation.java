@@ -20,6 +20,7 @@ public class Evaluation {
 	private static int tn = 0;
 	private static int infNeeds = 2;
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		/* Comprobar que se ha invocado bien al programa */
 		String usage = "Uso de este programa:\tjava prac3.Evaluation -qrels <qRelsFileName>"
