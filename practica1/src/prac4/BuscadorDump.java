@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
  *         formateado de una manera determinada
  */
 
-public class Buscador {
+public class BuscadorDump {
 
 	/* Atributos privados */
 
@@ -384,7 +384,7 @@ public class Buscador {
 		for (int i = 0; i < result.size(); i++) {
 			try {
 				int year = Integer.parseInt(result.get(i));
-				if ((i + 1) < result.size() && result.get(i + 1).equalsIgnoreCase("años") && (i - 1) >= 0
+				if ((i + 1) < result.size() && result.get(i + 1).equalsIgnoreCase("aï¿½os") && (i - 1) >= 0
 						&& result.get(i - 1).equalsIgnoreCase("ultim")) {
 					years.add(year);
 					result.remove(String.valueOf(year));
@@ -459,6 +459,6 @@ public class Buscador {
 	/**
 	 * Constructor (privado puesto que no se puede instanciar)
 	 */
-	private Buscador() {
+	private BuscadorDump() {
 	}
 }

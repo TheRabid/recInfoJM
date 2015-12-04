@@ -1,0 +1,5 @@
+Notas rec info
+Prac1
+
+Lucene no devuelve más resultados porque mira solo el contenido de las etiquetas, no el nombre de las
+mismas
