@@ -469,7 +469,7 @@ public class Indexador {
 	private static ArrayList<Par> parseDump(String path) throws FileNotFoundException {
 		/* Initialize objects */
 		File f = new File(path);
-		Scanner s = new Scanner(f);
+		Scanner s = new Scanner(f, "UTF-8");
 		boolean nameFound = false;
 		boolean contentFound = false;
 		Par temp = new Par(null, null);
