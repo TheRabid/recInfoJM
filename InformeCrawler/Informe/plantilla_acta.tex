@@ -16,7 +16,7 @@
 
 \begin{document}
 
-\title{Informe del sistema de recuperación tradicional MiniTREC}
+\title{Comparativa de resultados entre el sistema de recuperación de información tradicional y Solr con la configuración por defecto}
 \author{
 	Jaime Ruiz-Borau Vizárraga\\
 	\texttt{546751}
@@ -27,16 +27,14 @@
 \date{}
 \maketitle
 
-\section{Arquitectura del software desarrollado}
-\paragraph{}El siguiente diagrama de clases representa el diseño arquitectural del software desarrollado para el sistema de recuperación tradicional:
-\begin{figure}[!hb]
-	\includegraphics[width=\linewidth]{DiagramClass.png}
-	\caption{Diagrama de clases y paquetes del sistema}
-	\label{fig:class}
-\end{figure}
-\\
-\newpage
-\paragraph{}Como se puede apreciar en el diagrama, todas las clases se alojan en el paquete \textbf{trabajo}. Los nombres de las principales clases se explican por sí mismos: la clase \textit{Indexador} es la que posee métodos para indexar una colección de documentos especificada por parámetro tal y como solicita el enunciado; y la clase \textit{Buscador} es la que se encarga de realizar las consultas de las necesidades de información en base al índice creado por la clase Indexador.
+\section{Necesidades de información}
+\subsection{Necesidad 1: Me interesan los trabajos en relación con el mundo de la musica y el sonido cuyo autor o director se llame Javier}
+\paragraph{}Para esta necesidad de información, nuestro sistema de recuperación no ha devuelto \textbf{ningún resultado}.
+\paragraph{}En cambio, el sistema de recuperación Apache Solr, ha devuelto 2015 documentos, cuyos 10 primeros resultados son los siguientes: 
+\subsection{Necesidad 2: Estoy interesado en el periodo histórico de la Guerra de Independencia	(1808-1814). Me gustaría saber qué trabajos o artículos hay relacionados con este hecho englobados en la historia de España}
+\paragraph{}Para esta necesidad de información, nuestro sistema de recuperación ha devuelto \textbf{9 documentos}: 7398, 7780, 7929, 7472, 7825, 7371, 7790, 7271 y 7301, en ese orden.
+\paragraph{}En cuanto al análisis de la calidad de estos documentos, el primer documento es \textbf{bastante relevante} para la consulta, pero el segundo ya no resulta tan relevante y a partir del tercero dejan de tener algo que ver con la consulta de forma global (coinciden en palabras clave pero no tienen que ver con ella).
+
 \paragraph{}Adicionalmente existe una tercera clase, \textit{CustomSpanishAnalyzer}, que extiende a la clase de Lucene \textbf{Analyzer}. Reimplementa el método \textit{createComponents}, que permite modificar las StopWords que suprimirá el analizador a la hora de lematizar una consulta.
 \\
 \newline Como detalle adicional, ambas clases Buscador e Indexador poseen un booleano \textbf{DEBUG} que a no ser que sea establecido manualmente a \textbf{true} impedirá que ambos programas muestren salida alguna por pantalla.
