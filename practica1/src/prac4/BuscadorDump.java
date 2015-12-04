@@ -72,8 +72,8 @@ public class BuscadorDump {
 		}
 
 		/* Variables por defecto */
-		String index = "index";
-		String infoNeeds = "defaultNeedsFile.xml";
+		String index = "indexDump";
+		String infoNeeds = "NecesidadesInformacionElegidas.xml";
 		String output = "defaultResultsFile.txt";
 		int totalDocs = 20000;
 
@@ -419,6 +419,7 @@ public class BuscadorDump {
 	 */
 	private static String buscar(IndexSearcher searcher, Query query, int docs, String need, boolean debug)
 			throws IOException {
+		System.out.println(query.toString());
 		String returned = "";
 
 		// Buscar los n primeros documentos para la consulta

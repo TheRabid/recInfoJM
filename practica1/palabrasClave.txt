@@ -1,0 +1,26 @@
+[music, son]
++(creator:javi) +(description:music description:son) +(title:music title:son)
+
+
+[histor, guerr, independent, 1808, 1814, histori, españ]
++(description:histor description:guerr description:independent description:1808 
+description:1814 description:histori description:españ) +(title:histor title:guerr 
+title:independent title:1808 title:1814 title:histori title:españ)
+
+
+[energ, renov, 2010, 2015]
++date:[2010 TO 2015] +(description:energ description:renov description:2010 description:2015) 
++(title:energ title:renov title:2010 title:2015)
+
+
+[desarroll, videojueg, diseñ, personaj, ultim, 5, años]
++(description:desarroll description:videojueg description:diseñ description:personaj 
+description:ultim description:5 description:años) +(title:desarroll title:videojueg 
+title:diseñ title:personaj title:ultim title:5 title:años)
+
+
+[construccion, arquitecton, españ, decor, edad, medi, epoc, gotic, conserv, optim]
++(description:construccion description:arquitecton description:españ description:decor 
+description:edad description:medi description:epoc description:gotic description:conserv 
+description:optim) +(title:construccion title:arquitecton title:españ title:decor 
+title:edad title:medi title:epoc title:gotic title:conserv title:optim)

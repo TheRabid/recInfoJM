@@ -46,7 +46,7 @@ public class Indexador {
 	private static final boolean DEBUG = false;
 
 	/**
-	 * Método main de la clase IndexFiles. Indexa todos los documentos pasados
+	 * Metodo main de la clase IndexFiles. Indexa todos los documentos pasados
 	 * por parametro (docs_path) en index_path.
 	 * 
 	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-docs DOCS_PATH]
