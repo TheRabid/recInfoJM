@@ -228,8 +228,10 @@ public class Indexador {
 				if (DEBUG)
 					System.out.println("updating " + path);
 				writer.updateDocument(new Term("path", path), doc);
-			} 
+			}
+			
 		}
+		System.out.println(dump.size());
 	}
 
 
