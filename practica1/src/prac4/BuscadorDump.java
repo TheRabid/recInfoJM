@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
  * @author Alberto Sabater Bailon (546297)
  * @author Jaime Ruiz-Borau Vizarraga (546751)
  * 
- *         La clase Buscador implementa metodos para buscar datos de
+ *         La clase BuscadorDump implementa metodos para buscar datos de
  *         consultas/necesidades de informacion en un indice creado por Lucene
  *         previamente. Posee asimismo un metodo main que se encarga de
  *         gestionar las necesidades de informacion contenidas en un fichero XML

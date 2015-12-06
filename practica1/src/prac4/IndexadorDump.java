@@ -35,9 +35,10 @@ import org.xml.sax.SAXException;
  * 
  *         La clase Indexador implementa metodos para indexar los documentos de
  *         una coleccion determinada para mas adelante realizar busquedas sobre
- *         esos indices creados
+ *         esos indices creados. Esta version en concreto lo hace sobre el volcado
+ *         del segmento que da Apache Nutch
  */
-public class Indexador {
+public class IndexadorDump {
 
 	/* Atributos privados */
 
@@ -46,15 +47,15 @@ public class Indexador {
 	private static final boolean DEBUG = false;
 
 	/**
-	 * Metodo main de la clase IndexFiles. Indexa todos los documentos pasados
-	 * por parametro (docs_path) en index_path.
+	 * Metodo main de la clase Indexador. Indexa todos los documentos pasados
+	 * por parametro (seg_path) en index_path.
 	 * 
-	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-docs DOCS_PATH]
+	 * Uso: java trabajo.Indexador [-index INDEX_PATH] [-seg SEG_PATH]
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
 	public static void main(String[] args) throws SAXException, ParserConfigurationException {
-		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-dump dumpPath]\n\n";
+		String usage = "Uso: java trabajo.IndexFiles" + " [-index INDEX_PATH] [-seg segPath]\n\n";
 
 		String indexPath = "indexDump";
 		String dumpPath = "dumps/dump";
@@ -476,6 +477,7 @@ public class Indexador {
 		boolean contentFound = false;
 		Par temp = new Par(null, null);
 		ArrayList<Par> returned = new ArrayList<Par>();
+		int cuenta = 0;
 
 		while (s.hasNextLine()) {
 			String line = s.nextLine();
@@ -501,6 +503,11 @@ public class Indexador {
 					} else {
 						temp.content = newLine;
 						contentFound = true;
+						newLine = s.nextLine();
+						while(!newLine.startsWith("Recno::") && s.hasNextLine()){	
+							temp.content = temp.content + newLine;
+							newLine = s.nextLine();
+						}
 					}
 				}
 			}
@@ -510,6 +517,8 @@ public class Indexador {
 				contentFound = false;
 				returned.add(temp);
 				temp = new Par(null, null);
+				cuenta++;
+				System.out.println(cuenta);
 			}
 		}
 		s.close();
@@ -519,6 +528,6 @@ public class Indexador {
 	/**
 	 * Constructor (privado, puesto que no se puede instanciar)
 	 */
-	private Indexador() {
+	private IndexadorDump() {
 	}
 }
