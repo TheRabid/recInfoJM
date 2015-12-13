@@ -14,10 +14,6 @@ public class Evaluation {
 	// Atributos privados
 	private static ArrayList<QRel> q;
 	private static ArrayList<Result> r;
-	private static int tp = 0;
-	private static int fp = 0;
-	private static int fn = 0;
-	private static int tn = 0;
 	private static int infNeeds = 2;
 
 	@SuppressWarnings("unused")
@@ -55,23 +51,27 @@ public class Evaluation {
 
 		for (int i = 1; i < infNeeds + 1; i++) {
 			// Actualizar true y false positives y negatives
-			updateNumbers(i);
+			Values v = updateNumbers(i);
+
+			// Inf Need
+			System.out.println("Information need: " + i);
 
 			// Precision
-			System.out.println(getPrecision(i));
-			System.out.println(tp);
-			System.out.println(fp);
-			System.out.println(fn);
-			System.out.println(tn);
+			System.out.println("Precision: " + getPrecision(v));
+			System.out.println("Recall: " + getRecall(v));
+			System.out.println(v.getTP());
+			System.out.println(v.getFP());
+			System.out.println(v.getFN());
+			System.out.println(v.getTN());
 		}
 
 	}
 
-	private static void updateNumbers(int infNeed) {
-		tp = 0;
-		fp = 0;
-		tn = 0;
-		fn = 0;
+	private static Values updateNumbers(int infNeed) {
+		int tp = 0;
+		int fp = 0;
+		int tn = 0;
+		int fn = 0;
 		for (QRel qrel : q) {
 			if (infNeed == qrel.getInformation_need()) {
 				boolean found = false;
@@ -95,9 +95,15 @@ public class Evaluation {
 				}
 			}
 		}
+
+		return new Values(infNeed, tp, fp, tn, fn);
 	}
 
-	private static double getPrecision(int infNeed) {
-		return tp / ((double) (tp + fp));
+	private static double getPrecision(Values v) {
+		return v.getTP() / ((double) (v.getTP() + v.getFP()));
+	}
+
+	private static double getRecall(Values v) {
+		return v.getTP() / ((double) (v.getTP() + v.getFN()));
 	}
 }
