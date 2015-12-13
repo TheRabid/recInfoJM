@@ -27,9 +27,9 @@ public class Evaluation {
 		}
 
 		/* Variables por defecto */
-		String qrels = "qrels.txt";
-		String results = "results.txt";
-		String output = "output.txt";
+		String qrels = "Prac3Files/qrels.txt";
+		String results = "Prac3Files/results.txt";
+		String output = "Prac3Files/output.txt";
 
 		/* Busqueda de los parametros del programa */
 		for (int i = 0; i < args.length; i++) {
