@@ -52,11 +52,11 @@ public class Evaluation {
 		/* Funcionamiento del programa */
 		q = DataExtractor.getQRels(qrels);
 		r = DataExtractor.getResultados(results);
-		
-		for(int i = 1; i<infNeeds+1;i++){
+
+		for (int i = 1; i < infNeeds + 1; i++) {
 			// Actualizar true y false positives y negatives
 			updateNumbers(i);
-			
+
 			// Precision
 			System.out.println(getPrecision(i));
 			System.out.println(tp);
@@ -68,27 +68,27 @@ public class Evaluation {
 	}
 
 	private static void updateNumbers(int infNeed) {
-		tp=0;
-		fp=0;
-		tn=0;
-		fn=0;
+		tp = 0;
+		fp = 0;
+		tn = 0;
+		fn = 0;
 		for (QRel qrel : q) {
 			if (infNeed == qrel.getInformation_need()) {
 				boolean found = false;
 				for (Result resul : r) {
 					if (infNeed == resul.getInformation_need() && qrel.getDocument_id() == resul.getDocument_id()) {
 						found = true;
-						if(qrel.getRelevancy()==1)
+						if (qrel.getRelevancy() == 1)
 							tp++;
 						else
 							fp++;
 					}
-					if(found){
+					if (found) {
 						break;
 					}
 				}
-				if(!found){
-					if(qrel.getRelevancy()==1)
+				if (!found) {
+					if (qrel.getRelevancy() == 1)
 						fn++;
 					else
 						tn++;
@@ -98,6 +98,6 @@ public class Evaluation {
 	}
 
 	private static double getPrecision(int infNeed) {
-		return tp/((double)(tp+fp));
+		return tp / ((double) (tp + fp));
 	}
 }
