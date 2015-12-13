@@ -57,8 +57,9 @@ public class Evaluation {
 			System.out.println("Information need: " + i);
 
 			// Precision
-			System.out.println("Precision: " + getPrecision(v));
-			System.out.println("Recall: " + getRecall(v));
+			System.out.printf("Precision: %.2f%n", getPrecision(v));
+			System.out.printf("Recall: %.2f%n", getRecall(v));
+			System.out.printf("F1 Score: %.2f%n", getF1Score(v));
 			System.out.println(v.getTP());
 			System.out.println(v.getFP());
 			System.out.println(v.getFN());
@@ -105,5 +106,9 @@ public class Evaluation {
 
 	private static double getRecall(Values v) {
 		return v.getTP() / ((double) (v.getTP() + v.getFN()));
+	}
+
+	private static double getF1Score(Values v) {
+		return 2 * ((getPrecision(v) * getRecall(v)) / (getPrecision(v) + getRecall(v)));
 	}
 }
