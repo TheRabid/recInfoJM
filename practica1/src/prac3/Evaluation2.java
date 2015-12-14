@@ -57,6 +57,8 @@ public class Evaluation2 {
 			System.out.println("**************************************");
 			System.out.println();
 		}
+		
+		printConslusion(data);
 	}
 
 	private static ArrayList<ConsultData> getData() {
@@ -216,5 +218,40 @@ public class Evaluation2 {
 		}
 
 		return interpolatedRP;
+	}
+	
+	private static void printConslusion(ArrayList<ConsultData> data) {
+		System.out.println("TOTAL");
+		
+		double precision=0, recall=0, f1=0, prec10=0, MAP=0;
+		
+		double[] interpolated = new double[11];
+		
+		for (ConsultData cd:data) {
+			precision += getPrecision(cd);
+			recall += getRecall(cd);
+			f1 += getF1Score(cd);
+			prec10 += getPrecision(cd, K);
+			MAP += getMeanAveragePrecision(cd);
+			
+			double[] inter = getInterpolatedRecallPrecision(cd);
+			for (int i=0; i<inter.length; i++) {
+				interpolated[i] += inter[i];
+			}
+		}
+		
+		int numConsults = data.size();
+		
+		System.out.printf("Precision: %.3f%n", precision/numConsults);
+		System.out.printf("Recall: %.3f%n", recall/numConsults);
+		System.out.printf("F1 Score: %.3f%n", f1/numConsults);
+		System.out.printf("Precision@%d: %.3f%n", K, prec10/numConsults);
+		System.out.printf("Mean Average Precision: %.3f%n", MAP/numConsults);
+		System.out.println("interpolated_recall_precision");
+		double r = 0.0;
+		for (double d : interpolated) {
+			System.out.printf("%.3f\t%.3f%n", r, d/numConsults);
+			r += 0.1;
+		}
 	}
 }
