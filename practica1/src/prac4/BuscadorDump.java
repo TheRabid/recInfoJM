@@ -277,7 +277,7 @@ public class BuscadorDump {
 			TermQuery queryStr = new TermQuery(new Term("description", q));
 			descriptionTitle.add(queryStr, BooleanClause.Occur.SHOULD);
 		}
-		query.add(descriptionTitle,BooleanClause.Occur.MUST);
+		query.add(descriptionTitle, BooleanClause.Occur.MUST);
 
 		BooleanQuery t = new BooleanQuery();
 		for (String q : result) {
@@ -324,7 +324,7 @@ public class BuscadorDump {
 				} else {
 					if (encontrado) {
 						if (sp.size() != 0) {
-							//result.add(sp.get(0));
+							// result.add(sp.get(0));
 						}
 						fin = true;
 					}
