@@ -2,25 +2,26 @@ package prac3;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class Evaluation2 {
+public class EvaluationT {
 
 	// Atributos privados
-	private static ArrayList<QRel> q;
-	private static ArrayList<Result> r;
+	private static ArrayList<QRelT> q;
+	private static ArrayList<ResultT> r;
 
 	private static final int K = 10;
 
 	public static void main(String[] args) throws FileNotFoundException {
 
 		/* Funcionamiento del programa */
-		q = DataExtractor.getQRels("Prac3Files/qrels.txt");
-		r = DataExtractor.getResultados("Prac3Files/results.txt");
+		q = DataExtractorT.getQRels("Prac3Files/qrels.txt");
+		r = DataExtractorT.getResultados("Prac3Files/results.txt");
 
-		ArrayList<ConsultData> data = getData();
+		ArrayList<ConsultDataT> data = getData();
 
 		System.out.println();
-		for (ConsultData c : data) {
+		for (ConsultDataT c : data) {
 			System.out.println("Information need: " + c.getConsult());
 
 			// Precision
@@ -30,13 +31,12 @@ public class Evaluation2 {
 			System.out.printf("Precision@%d: %.3f%n", K, getPrecision(c, K));
 			System.out.printf("Mean Average Precision: %.3f%n", getMeanAveragePrecision(c));
 
-			/*System.out.println("Tp " + c.getTp());
-			System.out.println("Fp " + c.getFp());
-			System.out.println("Tn " + c.getTn());
-			System.out.println("Fn " + c.getFn());*/
-			
-			
-			
+			/*
+			 * System.out.println("Tp " + c.getTp()); System.out.println("Fp " +
+			 * c.getFp()); System.out.println("Tn " + c.getTn());
+			 * System.out.println("Fn " + c.getFn());
+			 */
+
 			ArrayList<RecPrecPoint> rpp = c.getRec_prec_points();
 			System.out.println("recall_precision");
 
@@ -57,131 +57,137 @@ public class Evaluation2 {
 			System.out.println("**************************************");
 			System.out.println();
 		}
-		
+
 		printConslusion(data);
 	}
 
-	private static ArrayList<ConsultData> getData() {
+	private static ArrayList<ConsultDataT> getData() {
 
-		ArrayList<ConsultData> data = new ArrayList<ConsultData>();
-		data.add(new ConsultData(0));
-
+		HashMap<String, ConsultDataT> data = new HashMap<String, ConsultDataT>();
 		ArrayList<RecPrecPoint> rpp = new ArrayList<RecPrecPoint>();
 
-		int numConsult = 0;
 		int numDocs = 1;
 		int numRight = 1;
-		int maxDoc = 1;
+		String actualDoc = "";
 		boolean found = false;
+		ArrayList<String> needs = new ArrayList<String>();
 
 		// Searching for true positives & false positives
 		for (int i = 0; i < r.size();) {
-			if (r.get(i).getInformation_need() > maxDoc) {
-				
-				data.get(maxDoc-1).setRec_prec_points(rpp);
-				data.add(new ConsultData(maxDoc));
+			if (data.size() == 0 || !r.get(i).getInformation_need().equals(actualDoc)) {
+				if (data.containsKey(actualDoc)) {
+					data.get(actualDoc).setRec_prec_points(rpp);
+				}
+				actualDoc = r.get(i).getInformation_need();
+				needs.add(actualDoc);
+				data.put(actualDoc, (new ConsultDataT(actualDoc)));
 				rpp = new ArrayList<RecPrecPoint>();
-				maxDoc = r.get(i).getInformation_need();
-				
 				numDocs = 1;
 				numRight = 1;
 			}
-			
-			Result res = r.get(i);
+
 			for (int j = 0; j < q.size();) {
-				QRel qr = q.get(j);
-				
-				if (r.get(i).getInformation_need() == q.get(j).getInformation_need()
-						&& r.get(i).getDocument_id() == q.get(j).getDocument_id()) { 
+
+				if (r.get(i).getInformation_need().equals(q.get(j).getInformation_need())
+						&& r.get(i).getDocument_id().equals(q.get(j).getDocument_id())) {
 
 					if (q.get(j).getRelevancy() == 1) { // True positive
-						rpp.add(new RecPrecPoint(numRight, (double) numRight / numDocs)); 
-						
+						rpp.add(new RecPrecPoint(numRight, (double) numRight / numDocs));
+
 						numRight++;
-						data.get(r.get(i).getInformation_need() - 1).addTp();
+						data.get(actualDoc).addTp();
 					} else { // False positive
-						data.get(r.get(i).getInformation_need() - 1).addFp();
+						data.get(actualDoc).addFp();
 					}
-					
+
 					r.remove(i);
 					q.remove(j);
-					
+
 					found = true;
 					break;
-					
-				}
-				else {
+
+				} else {
 					j++;
 				}
-				
-				
+
 			}
-			
+
 			numDocs++;
-			
+
 			if (found) {
 				found = false;
-			}
-			else {
+			} else {
 				i++;
 			}
 		}
 
-		data.get(maxDoc-1).setRec_prec_points(rpp);
+		data.get(actualDoc).setRec_prec_points(rpp);
 		rpp = new ArrayList<RecPrecPoint>();
 
-		for (QRel rq:q) {
+		for (QRelT rq : q) {
 			if (rq.getRelevancy() == 1) { // False negative
-				rpp.add(new RecPrecPoint(numRight, (double) numRight / numDocs)); 
-				
+				rpp.add(new RecPrecPoint(numRight, (double) numRight / numDocs));
+
 				numRight++;
-				data.get(rq.getInformation_need() - 1).addFn();
+				data.get(rq.getInformation_need()).addFn();
 			} else { // True negative
-				data.get(rq.getInformation_need() - 1).addTn();
+				data.get(rq.getInformation_need()).addTn();
 			}
 		}
-		
-		for (ConsultData cd : data) {
-			ArrayList<RecPrecPoint> points = cd.getRec_prec_points();
+
+		ArrayList<ConsultDataT> result = new ArrayList<ConsultDataT>();
+		for (String cd : needs) {
+			ArrayList<RecPrecPoint> points = data.get(cd).getRec_prec_points();
 
 			for (RecPrecPoint p : points) {
-				p.setRecall(p.getRecall() / (cd.getTp() + cd.getFn()));
+				p.setRecall(p.getRecall() / (data.get(cd).getTp() + data.get(cd).getFn()));
 			}
+			result.add(data.get(cd));
 		}
 
-		return data;
+		return result;
 	}
 
-	private static double getPrecision(ConsultData v) {
+	private static double getPrecision(ConsultDataT v) {
 		return v.getTp() / ((double) (v.getTp() + v.getFp()));
 	}
 
-	private static double getPrecision(ConsultData v, int k) {
-		return v.getTp(k) / ((double) (v.getTp(k) + v.getFp(k)));
+	private static double getPrecision(ConsultDataT v, int k) {
+		if (v.getSizeOfConsultData() >= 10) {
+			return v.getTp(k) / ((double) (v.getTp(k) + v.getFp(k)));
+		} else {
+			double r = v.getTp(k) / ((double) (v.getTp(k) + v.getFp(k)));
+			return r / 10.0;
+		}
+
 	}
 
-	private static double getRecall(ConsultData v) {
+	private static double getRecall(ConsultDataT v) {
 		return v.getTp() / ((double) (v.getTp() + v.getFn()));
 	}
 
-	private static double getF1Score(ConsultData v) {
+	private static double getF1Score(ConsultDataT v) {
 		return 2 * ((getPrecision(v) * getRecall(v)) / (getPrecision(v) + getRecall(v)));
 	}
 
-	private static double getMeanAveragePrecision(ConsultData c) {
-		ArrayList<RecPrecPoint> rpp = c.getRec_prec_points();
+	private static double getMeanAveragePrecision(ConsultDataT c) {
+		if (c.getSizeOfConsultData() == 0) {
+			return 0;
+		} else {
+			ArrayList<RecPrecPoint> rpp = c.getRec_prec_points();
 
-		double avg = 0.0;
+			double avg = 0.0;
 
-		for (RecPrecPoint p : rpp) {
-			avg += p.getPrecision();
+			for (RecPrecPoint p : rpp) {
+				avg += p.getPrecision();
+			}
+
+			return avg / rpp.size();
 		}
-
-		return avg / rpp.size();
 
 	}
 
-	private static double[] getInterpolatedRecallPrecision(ConsultData c) {
+	private static double[] getInterpolatedRecallPrecision(ConsultDataT c) {
 
 		ArrayList<RecPrecPoint> rpp = c.getRec_prec_points();
 
@@ -219,38 +225,38 @@ public class Evaluation2 {
 
 		return interpolatedRP;
 	}
-	
-	private static void printConslusion(ArrayList<ConsultData> data) {
+
+	private static void printConslusion(ArrayList<ConsultDataT> data) {
 		System.out.println("TOTAL");
-		
-		double precision=0, recall=0, f1=0, prec10=0, MAP=0;
-		
+
+		double precision = 0, recall = 0, f1 = 0, prec10 = 0, MAP = 0;
+
 		double[] interpolated = new double[11];
-		
-		for (ConsultData cd:data) {
+
+		for (ConsultDataT cd : data) {
 			precision += getPrecision(cd);
 			recall += getRecall(cd);
 			f1 += getF1Score(cd);
 			prec10 += getPrecision(cd, K);
 			MAP += getMeanAveragePrecision(cd);
-			
+
 			double[] inter = getInterpolatedRecallPrecision(cd);
-			for (int i=0; i<inter.length; i++) {
+			for (int i = 0; i < inter.length; i++) {
 				interpolated[i] += inter[i];
 			}
 		}
-		
+
 		int numConsults = data.size();
-		
-		System.out.printf("Precision: %.3f%n", precision/numConsults);
-		System.out.printf("Recall: %.3f%n", recall/numConsults);
-		System.out.printf("F1 Score: %.3f%n", f1/numConsults);
-		System.out.printf("Precision@%d: %.3f%n", K, prec10/numConsults);
-		System.out.printf("Mean Average Precision: %.3f%n", MAP/numConsults);
+
+		System.out.printf("Precision: %.3f%n", precision / numConsults);
+		System.out.printf("Recall: %.3f%n", recall / numConsults);
+		System.out.printf("F1 Score: %.3f%n", f1 / numConsults);
+		System.out.printf("Precision@%d: %.3f%n", K, prec10 / numConsults);
+		System.out.printf("Mean Average Precision: %.3f%n", MAP / numConsults);
 		System.out.println("interpolated_recall_precision");
 		double r = 0.0;
 		for (double d : interpolated) {
-			System.out.printf("%.3f\t%.3f%n", r, d/numConsults);
+			System.out.printf("%.3f\t%.3f%n", r, d / numConsults);
 			r += 0.1;
 		}
 	}
