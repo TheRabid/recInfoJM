@@ -17,67 +17,39 @@ public class ConsultDataT {
 	}
 
 	public void addTp() {
-		if (kresults.size() < 50) {
-			tp++;
-			kresults.add("tp");
-		}
+		tp++;
+		kresults.add("tp");
 	}
 
 	public void addFp() {
-		if (kresults.size() < 50) {
-			fp++;
-			kresults.add("fp");
-		}
+		fp++;
+		kresults.add("fp");
 	}
 
 	public void addFn() {
-		if (kresults.size() < 50) {
-			fn++;
-			kresults.add("fn");
-		}
+		fn++;
+		kresults.add("fn");
 	}
 
 	public void addTn() {
-		if (kresults.size() < 50) {
-			tn++;
-			kresults.add("tn");
-		}
+		tn++;
+		kresults.add("tn");
 	}
 
 	public int getTp() {
 		return tp;
 	}
 
-	public void setTp(int tp) {
-		this.tp = tp;
-	}
-
 	public int getFp() {
 		return fp;
-	}
-
-	public void setFp(int fp) {
-		this.fp = fp;
 	}
 
 	public int getFn() {
 		return fn;
 	}
 
-	public void setFn(int fn) {
-		this.fn = fn;
-	}
-
 	public int getTn() {
 		return tn;
-	}
-
-	public void setTn(int tn) {
-		this.tn = tn;
-	}
-
-	public String getConsult() {
-		return consult;
 	}
 
 	public int getTp(int k) {
@@ -120,8 +92,8 @@ public class ConsultDataT {
 		return cuenta;
 	}
 
-	public void setConsult(String consult) {
-		this.consult = consult;
+	public String getConsult() {
+		return consult;
 	}
 
 	public ArrayList<RecPrecPoint> getRec_prec_points() {
