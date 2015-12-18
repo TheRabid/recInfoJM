@@ -166,12 +166,8 @@ public class EvaluationT {
 				double prec = p.getPrecision();
 				double rec = p.getRecall();
 				if (rec >= i) {
-					if (rec <= i + 0.1) {
-						if (prec > max) {
-							max = prec;
-						}
-					} else {
-						break;
+					if (prec > max) {
+						max = prec;
 					}
 				}
 			}
