@@ -7,7 +7,7 @@ package trabajo;
  *         La clase QRelT define un tipo de objeto para almacenar informacion
  *         acerca de los juicios de relevancia dados un identificador de
  *         documento y una necesidad de informacion. El distintivo 'T' en su
- *         nombre lo diferencia de la clase Evaluation de la practica 3.
+ *         nombre lo diferencia de la clase QRel de la practica 3.
  */
 
 public class QRelT {
