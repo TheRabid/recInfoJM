@@ -2,12 +2,20 @@ package trabajo;
 
 import java.util.ArrayList;
 
+/**
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         Clase que contiene toda la información asociada 
+ *         a una consulta.
+ */
+
 public class ConsultDataT {
 
-	private int tp, fp, fn, tn;
-	private String consult;
+	private int tp, fp, fn, tn;		// Valores asociados una consulta
+	private String consult;			// Nombre de la consulta
 
-	private ArrayList<RecPrecPoint> rec_prec_points;
+	private ArrayList<RecPrecPoint> rec_prec_points;	// Valores de la grafica recall_precision
 	private ArrayList<String> kresults;
 
 	public ConsultDataT(String consult) {
