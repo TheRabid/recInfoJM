@@ -9,12 +9,16 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class DataExtractorT {
+	
+	/* Atributos privados */
+	private static final boolean DEBUG = false;
 
 	public static HashMap<String, ArrayList<QRelT>> getQRels(String ficheroQRels) throws FileNotFoundException {
 		// Crear fichero, scanner y ArrayList
 		File f = new File(ficheroQRels);
 		Scanner s = new Scanner(f);
 		HashMap<String, ArrayList<QRelT>> hreturned = new HashMap<String, ArrayList<QRelT>>();
+		@SuppressWarnings("unused")
 		int fila = 1;
 
 		// Iterar hasta encontrar todos los juicios de relevancia
@@ -34,12 +38,14 @@ public class DataExtractorT {
 			} catch (InputMismatchException e) {
 				if (s.hasNextLine())
 					s.nextLine();
-				System.err.println("Fila " + fila + " del fichero qrels mal formada");
+				if(DEBUG)
+					System.err.println("Fila " + fila + " del fichero qrels mal formada");
 				fila++;
 			} catch (NoSuchElementException e) {
 				if (s.hasNextLine())
 					s.nextLine();
-				System.err.println("Fila " + fila + " del fichero qrels mal formada");
+				if(DEBUG)
+					System.err.println("Fila " + fila + " del fichero qrels mal formada");
 				fila++;
 			}
 		}
@@ -53,6 +59,7 @@ public class DataExtractorT {
 		File f = new File(ficheroResultados);
 		Scanner s = new Scanner(f);
 		HashMap<String, ArrayList<ResultT>> hreturned = new HashMap<String, ArrayList<ResultT>>();
+		@SuppressWarnings("unused")
 		int fila = 1;
 
 		// Iterar hasta encontrar todos los resultados
@@ -71,12 +78,14 @@ public class DataExtractorT {
 			} catch (InputMismatchException e) {
 				if (s.hasNextLine())
 					s.nextLine();
-				System.err.println("Fila " + fila + " del fichero resultados mal formada");
+				if(DEBUG)
+					System.err.println("Fila " + fila + " del fichero resultados mal formada");
 				fila++;
 			} catch (NoSuchElementException e) {
 				if (s.hasNextLine())
 					s.nextLine();
-				System.err.println("Fila " + fila + " del fichero resultados mal formada");
+				if(DEBUG)
+					System.err.println("Fila " + fila + " del fichero resultados mal formada");
 				fila++;
 			}
 		}
