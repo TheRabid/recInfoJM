@@ -1,4 +1,4 @@
-package prac3;
+package trabajo;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package prac3;
+package trabajo;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -23,10 +23,9 @@ public class EvaluationT {
 		ArrayList<ConsultDataT> data = getData();
 
 		System.out.println();
-		for (ConsultDataT c : data) {
+		for (ConsultDataT c : data) {	// Print information for each consult
 			System.out.println("Information need: " + c.getConsult());
 
-			// Precision
 			System.out.printf("Precision: %.3f%n", getPrecision(c));
 			System.out.printf("Recall: %.3f%n", getRecall(c));
 			System.out.printf("F1 Score: %.3f%n", getF1Score(c));
@@ -72,7 +71,7 @@ public class EvaluationT {
 			ConsultDataT c = new ConsultDataT(strong);
 			ArrayList<RecPrecPoint> rpp = new ArrayList<RecPrecPoint>();
 
-			/* Bucle de iteración principal a lo largo de los resultados */
+			/* Bucle de iteracion principal a lo largo de los resultados */
 			for (ResultT re : resu) {
 				/* Variables para saber si hemos encontrado la QRel */
 				boolean found = false;

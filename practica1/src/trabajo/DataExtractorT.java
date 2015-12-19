@@ -1,4 +1,4 @@
-package prac3;
+package trabajo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
