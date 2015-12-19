@@ -1,59 +1,120 @@
 package trabajo;
 
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         La clase EvaluationT contiene metodos para evaluar el sistema de
+ *         recuperacion de informacion desarrollado para el trabajo de la
+ *         asignatura. El distintivo 'T' en su nombre lo diferencia de la clase
+ *         Evaluation de la practica 3.
+ */
+
 public class EvaluationT {
 
-	// Atributos privados
+	/* Atributos privados */
+
+	// Hashmap con los juicios de relevancia para cada documento y consulta
 	private static HashMap<String, ArrayList<QRelT>> q;
+
+	// Hashmap con los resultados devueltos por el buscador para cada documento
+	// y consulta
 	private static HashMap<String, ArrayList<ResultT>> r;
+
+	// ArrayList de String con los nombres de las consultas
 	private static ArrayList<String> n;
 
+	// Entero para la precision@k
 	private static final int K = 10;
 
+	// Strings por defecto para los ficheros
+	private static final String DEFAULTQRELS = "defaultQrels";
+	private static final String DEFAULTRESULTS = "defaultResults";
+	private static final String DEFAULTOUTPUT = "defaultOutput";
+
+	/**
+	 * Metodo main de la clase EvaluationT. Uso de este programa: java
+	 * trabajo.EvaluationT -qrels <qrelsFileName> -results
+	 * <resultsFileName> -output <outputFileName>
+	 */
 	public static void main(String[] args) throws FileNotFoundException {
+		/* Extraccion de parametros */
+		String qrels = DEFAULTQRELS;
+		String results = DEFAULTRESULTS;
+		String output = DEFAULTOUTPUT;
+		
+		for (int i = 0; i < args.length; i++) {
+			if (i != args.length - 1) {
+				if (args[i].equals("-qrels")) {
+					qrels = args[i + 1];
+				}
 
-		/* Funcionamiento del programa */
-		q = DataExtractorT.getQRels("zaguanRels.txt");
-		r = DataExtractorT.getResultados("equipo10.txt");
-		n = DataExtractorT.getNeeds("equipo10.txt");
+				if (args[i].equals("-results")) {
+					results = args[i + 1];
+				}
 
+				if (args[i].equals("-output")) {
+					output = args[i + 1];
+				}
+			}
+		}
+
+		/* Funcionamiento principal del programa */
+
+		/* Extraccion de informacion de los ficheros */
+		q = DataExtractorT.getQRels(qrels);
+		r = DataExtractorT.getResultados(results);
+		n = DataExtractorT.getNeeds(results);
 		ArrayList<ConsultDataT> data = getData();
 
-		System.out.println();
-		for (ConsultDataT c : data) {	// Muestra la informaion de cada consulta
-			System.out.println("Information need: " + c.getConsult());
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(output, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		/* Bucle principal de iteracion */
+		for (ConsultDataT c : data) {
 
-			System.out.printf("Precision: %.3f%n", getPrecision(c));
-			System.out.printf("Recall: %.3f%n", getRecall(c));
-			System.out.printf("F1 Score: %.3f%n", getF1Score(c));
-			System.out.printf("Precision@%d: %.3f%n", K, getPrecision(c, K));
-			System.out.printf("Mean Average Precision: %.3f%n", getMeanAveragePrecision(c));
+			/* Muestra la informacion de cada consulta */
+			writer.println("Information need: " + c.getConsult());
+			writer.printf("Precision: %.3f%n", getPrecision(c));
+			writer.printf("Recall: %.3f%n", getRecall(c));
+			writer.printf("F1 Score: %.3f%n", getF1Score(c));
+			writer.printf("Precision@%d: %.3f%n", K, getPrecision(c, K));
+			writer.printf("Mean Average Precision: %.3f%n", getMeanAveragePrecision(c));
 
 			ArrayList<RecPrecPoint> rpp = c.getRec_prec_points();
-			System.out.println("recall_precision");
+			writer.println("recall_precision");
 
 			for (int i = 0; i < K && i < rpp.size(); i++) {
 				RecPrecPoint p = rpp.get(i);
-				System.out.printf("%.3f\t%.3f%n", p.getRecall(), p.getPrecision());
+				writer.printf("%.3f\t%.3f%n", p.getRecall(), p.getPrecision());
 			}
 
-			System.out.println("interpolated_recall_precision");
+			writer.println("interpolated_recall_precision");
 			double[] interpolated = getInterpolatedRecallPrecision(c);
 			double r = 0.0;
 			for (double d : interpolated) {
-				System.out.printf("%.3f\t%.3f%n", r, d);
+				writer.printf("%.3f\t%.3f%n", r, d);
 				r += 0.1;
 			}
 
-			System.out.println();
-			System.out.println("**************************************");
-			System.out.println();
+			writer.println();
+			writer.println("**************************************");
+			writer.println();
 		}
 
-		printConclusion(data);
+		printConclusion(data, writer);
+		writer.close();
 	}
 
 	private static ArrayList<ConsultDataT> getData() {
@@ -98,12 +159,13 @@ public class EvaluationT {
 			for (int i = 0; i < qrel.size(); i++) {
 				c.addFn();
 			}
-			
+
 			/* Introducir ConsultData en data */
 			c.setRec_prec_points(rpp);
 			data.add(c);
 		}
 
+		/* Bucle para arreglar recalls */
 		for (ConsultDataT cd : data) {
 			ArrayList<RecPrecPoint> points = cd.getRec_prec_points();
 
@@ -130,7 +192,7 @@ public class EvaluationT {
 	private static double getF1Score(ConsultDataT v) {
 		return 2 * ((getPrecision(v) * getRecall(v)) / (getPrecision(v) + getRecall(v)));
 	}
-	
+
 	private static double getF1Score(double prec, double reca) {
 		return 2 * (prec * reca) / (prec + reca);
 	}
@@ -187,8 +249,8 @@ public class EvaluationT {
 		return interpolatedRP;
 	}
 
-	private static void printConclusion(ArrayList<ConsultDataT> data) {
-		System.out.println("TOTAL");
+	private static void printConclusion(ArrayList<ConsultDataT> data, PrintWriter writer) {
+		writer.println("TOTAL");
 
 		double precision = 0, recall = 0, prec10 = 0, MAP = 0;
 
@@ -208,15 +270,15 @@ public class EvaluationT {
 
 		int numConsults = data.size();
 
-		System.out.printf("Precision: %.3f%n", precision / numConsults);
-		System.out.printf("Recall: %.3f%n", recall / numConsults);
-		System.out.printf("F1 Score: %.3f%n", getF1Score(precision,recall) / numConsults);
-		System.out.printf("Precision@%d: %.3f%n", K, prec10 / numConsults);
-		System.out.printf("Mean Average Precision: %.3f%n", MAP / numConsults);
-		System.out.println("interpolated_recall_precision");
+		writer.printf("Precision: %.3f%n", precision / numConsults);
+		writer.printf("Recall: %.3f%n", recall / numConsults);
+		writer.printf("F1 Score: %.3f%n", getF1Score(precision, recall) / numConsults);
+		writer.printf("Precision@%d: %.3f%n", K, prec10 / numConsults);
+		writer.printf("Mean Average Precision: %.3f%n", MAP / numConsults);
+		writer.println("interpolated_recall_precision");
 		double r = 0.0;
 		for (double d : interpolated) {
-			System.out.printf("%.3f\t%.3f%n", r, d / numConsults);
+			writer.printf("%.3f\t%.3f%n", r, d / numConsults);
 			r += 0.1;
 		}
 	}

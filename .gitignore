@@ -21,3 +21,8 @@ practica1/.project
 *.class
 *.class
 practica1/bin/org/apache/lucene/demo/SearchFiles.class
+InformeJuicios/Informe/informeJuicios.log
+InformeJuicios/Informe/informeJuicios.out
+InformeJuicios/Informe/informeJuicios.synctex.gz
+InformeJuicios/paraEntregar/Thumbs.db
+*.aux
