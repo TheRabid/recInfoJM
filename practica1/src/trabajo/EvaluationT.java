@@ -23,7 +23,7 @@ public class EvaluationT {
 		ArrayList<ConsultDataT> data = getData();
 
 		System.out.println();
-		for (ConsultDataT c : data) {	// Print information for each consult
+		for (ConsultDataT c : data) {	// Muestra la informaion de cada consulta
 			System.out.println("Information need: " + c.getConsult());
 
 			System.out.printf("Precision: %.3f%n", getPrecision(c));
