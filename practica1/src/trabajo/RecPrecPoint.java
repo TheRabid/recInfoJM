@@ -1,5 +1,13 @@
 package trabajo;
 
+/**
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         La clase RecPrecPoint contiene el recall y la precision
+ *         asociados a una cosulta, para el calculo de la grafica
+ */
+
 public class RecPrecPoint {
 	
 	double recall, precision;

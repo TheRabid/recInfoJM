@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *         informacion acerca de las relaciones entre los aciertos y los fallos
  *         para una consulta y unos resultados del sistema de recuperacion de
  *         informacion que se quiere evaluar. El distintivo 'T' en su nombre lo
- *         diferencia de la clase QRel de la practica 3.
+ *         diferencia de la clase ConsultData de la practica 3.
  */
 
 public class ConsultDataT {
