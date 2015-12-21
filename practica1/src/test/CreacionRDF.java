@@ -47,8 +47,9 @@ public class CreacionRDF {
         // crea un modelo vacio
         Model model = ModelFactory.createDefaultModel();
 
-        // le añade las propiedades
-        Resource johnSmith  = model.createResource(personURI)
+        // le aÃ±ade las propiedades
+        @SuppressWarnings("unused")
+		Resource johnSmith  = model.createResource(personURI)
              .addProperty(VCARD.FN, fullName)
              .addProperty(VCARD.N, 
                       model.createResource()
