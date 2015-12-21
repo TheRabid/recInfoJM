@@ -22,6 +22,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 public class CreacionRDF {
@@ -107,7 +108,7 @@ public class CreacionRDF {
         		.addProperty(VCARD.FN, tamano)
         		.addProperty(VCARD.FN, comida);
         
-
+        
         return model;
 	}
 	
