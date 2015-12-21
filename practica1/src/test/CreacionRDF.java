@@ -61,7 +61,7 @@ public class CreacionRDF {
         String casaURI = "http://casa/Tarradellas";
         String numHabitaciones = "4";
         String comida = "fuet";
-        String tamaño = "Mu grande";
+        String tamano = "Mu grande";
         
         
         
@@ -104,7 +104,7 @@ public class CreacionRDF {
         
         Resource tarradellas = model.createResource(casaURI)
         		.addProperty(VCARD.FN, numHabitaciones)
-        		.addProperty(VCARD.FN, tamaño)
+        		.addProperty(VCARD.FN, tamano)
         		.addProperty(VCARD.FN, comida);
         
 
