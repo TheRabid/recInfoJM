@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 public class CreacionRDF {
@@ -39,6 +38,7 @@ public class CreacionRDF {
 	/**
 	 * Genera un modelo de jena de ejemplo
 	 */
+	@SuppressWarnings("unused")
 	public static Model generarEjemplo(){
 		// definiciones
         String personURI    = "http://somewhere/JohnSmith";
@@ -72,8 +72,7 @@ public class CreacionRDF {
         Resource persona1 = model.createResource("http://xmlns.com/foaf/0.1/person");
 
         // le añade las propiedades
-        @SuppressWarnings("unused")
-		Resource johnSmith  = model.createResource(personURI)
+        Resource johnSmith  = model.createResource(personURI)
              .addProperty(VCARD.FN, fullName)
              .addProperty(VCARD.N, 
                       model.createResource()
