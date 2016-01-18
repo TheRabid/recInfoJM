@@ -464,7 +464,7 @@ public class IndexadorDump {
 
 		// Rights
 		if (doc.getElementsByTagName("dc:rights").item(0) != null) {
-			doc1.add(new StringField("language", doc.getElementsByTagName("dc:rights").item(0).getTextContent(),
+			doc1.add(new StringField("rights", doc.getElementsByTagName("dc:rights").item(0).getTextContent(),
 					Field.Store.YES));
 		}
 	}
