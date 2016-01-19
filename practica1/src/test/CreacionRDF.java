@@ -68,15 +68,16 @@ public class CreacionRDF {
 		Model model = ModelFactory.createDefaultModel();
 		String URI = "http://recinfo.com/";
 		model.setNsPrefix("recinfo", URI);
-		Resource persona = model.createResource("http://www.recinfo.com/Persona");
+		String personaURI = "http://www.recinfo.com/Persona";
 		Property propNom = model.createProperty("http://recinfo.com/Nombre");
+		Property type = model.createProperty(propertyURI);
 		String am = "Alberto Mostro";
 		String jr = "Jaime Ruiz-Borau";
 		System.out.println(VCARD.FN.toString());
 
 		Resource lacasta = model.createResource("http://www.recinfo.com/" + "lacasta").addProperty(VCARD.FN,
 				"La castaza");
-		Resource albmos = model.createResource("http://www.recinfo.com/" + am).addProperty(propNom, am);
+		Resource albmos = model.createResource("http://www.recinfo.com/" + am).addProperty(propNom, am).addProperty(type, personaURI);
 		Resource jairui = model.createResource("http://www.recinfo.com/" + jr).addProperty(propNom, jr);
 
 		// Property prop = model.createProperty(propertyURI);
