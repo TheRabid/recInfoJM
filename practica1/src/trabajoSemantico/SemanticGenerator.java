@@ -38,14 +38,14 @@ public class SemanticGenerator {
 		File[] listFiles = new File(pathZaguan).listFiles();
 		
 		
-        Model model = ModelFactory.createDefaultModel();
+        model = ModelFactory.createDefaultModel();
         person = model.createResource("http://www.recInfo.com/Persona");
         document = model.createResource("http://www.recInfo.com/Document");
 
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
 //			System.out.println("New File");
-			addDocument(f, model);
+			addDocument(f);
 		}
 	
         model.write(System.out); 
@@ -53,7 +53,7 @@ public class SemanticGenerator {
 	}
 	
 	
-	public static void addDocument(File f, Model model){
+	public static void addDocument(File f){
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
