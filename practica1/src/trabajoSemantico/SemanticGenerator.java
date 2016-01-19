@@ -34,23 +34,9 @@ public class SemanticGenerator {
 	
 	public static void main(String[] args) {
 		
-		String pathZaguan = "recordsdc";
+		String pathZaguan = "./recordsdc";
+		File[] listFiles = new File(pathZaguan).listFiles();
 		
-		File documents =  new File(pathZaguan);
-		File[] listFiles = documents.listFiles();
-		
-		if (documents.isDirectory()) System.out.println("Directorio");
-		else  System.out.println("No directorio");
-		if (documents.isFile()) System.out.println("File");
-		else System.out.println("No File");
-		if (documents.isHidden()) System.out.println("Oculto");
-		else  System.out.println("no oculto");
-		if (documents.canRead()) System.out.println("canRead");
-		else  System.out.println("no canRead");
-		
-		if (listFiles == null) {
-			System.out.println("NULLLL");
-		}
 		
         Model model = ModelFactory.createDefaultModel();
         person = model.createResource("http://www.recInfo.com/Persona");
@@ -58,8 +44,8 @@ public class SemanticGenerator {
 
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
-			System.out.println("New File");
-			addDocument(f);
+//			System.out.println("New File");
+			addDocument(f, model);
 		}
 	
         model.write(System.out); 
@@ -67,7 +53,7 @@ public class SemanticGenerator {
 	}
 	
 	
-	public static void addDocument(File f){
+	public static void addDocument(File f, Model model){
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
@@ -84,18 +70,22 @@ public class SemanticGenerator {
 	//			doc1.add(new TextField("title", doc.getElementsByTagName("dc:title").item(0).getTextContent(),
 	//					Field.Store.YES));
 				
-				Resource person  = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:title").item(0).getTextContent().replace(" ", ""))
-			             .addProperty(VCARD.FN, doc.getElementsByTagName("dc:title").item(0).getTextContent());
-				
 			}
 	
-			/*
+			
 			// Creator
 			if (doc.getElementsByTagName("dc:creator").item(0) != null) {
-				doc1.add(new TextField("creator", doc.getElementsByTagName("dc:creator").item(0).getTextContent(),
-						Field.Store.YES));
+//				doc1.add(new TextField("creator", doc.getElementsByTagName("dc:creator").item(0).getTextContent(),
+//						Field.Store.YES));
+				
+				if (model == null) System.out.println("NUUUL");
+				Resource person  = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""))
+			             .addLiteral(VCARD.ADR, doc.getElementsByTagName("dc:creator").item(0).getTextContent());
+				
+			
+
 			}
-	
+	/*
 			// Subject
 			if (doc.getElementsByTagName("dc:subject").item(0) != null) {
 				doc1.add(new TextField("subject", doc.getElementsByTagName("dc:subject").item(0).getTextContent(),
