@@ -68,44 +68,53 @@ public class CreacionRDF {
         
         // crea un modelo vacio
         Model model = ModelFactory.createDefaultModel();
-        Property prop = model.createProperty(propertyURI);
-        Resource persona1 = model.createResource("http://xmlns.com/foaf/0.1/person");
-
-        // le añade las propiedades
-        Resource johnSmith  = model.createResource(personURI)
-             .addProperty(VCARD.FN, fullName)
-             .addProperty(VCARD.N, 
-                      model.createResource()
-                           .addProperty(VCARD.Given, givenName)
-                           .addProperty(VCARD.Family, familyName));
+        Resource persona = model.createResource("http://www.recinfo.com/Persona");
+        Property propNom = model.createProperty("http://www.recinfo.com/Nombre");
+        String am = "Alberto Mostro";
+        String jr = "Jaime Ruiz-Borau";
         
-        johnSmith.addProperty(prop, persona1);
+        Resource albmos = model.createResource("http://www.recinfo.com/"+am).addProperty(propNom,am);
+        Resource jairui = model.createResource("http://www.recinfo.com/"+jr).addProperty(propNom, jr);
         
         
-        Resource mikeJohnson = model.createResource(person2URI)
-        		.addProperty(VCARD.FN, fullName2)
-                .addProperty(VCARD.N, 
-                         model.createResource()
-                              .addProperty(VCARD.Given, givenName2)
-                              .addProperty(VCARD.Family, familyName2));
-        		
-        Resource aliceMcTetis = model.createResource(person3URI)
-        		.addProperty(VCARD.FN, fullName3)
-                .addProperty(VCARD.N, 
-                         model.createResource()
-                              .addProperty(VCARD.Given, givenName3)
-                              .addProperty(VCARD.Family, familyName3));
-        
-        
-        Resource relacion = model.createResource("http://xmlns.com/foaf/0.1/knows")
-        		.addProperty(VCARD.FN, mikeJohnson)
-        		.addProperty(VCARD.FN, aliceMcTetis);
-        		
-        
-        Resource tarradellas = model.createResource(casaURI)
-        		.addProperty(VCARD.FN, numHabitaciones)
-        		.addProperty(VCARD.FN, tamano)
-        		.addProperty(VCARD.FN, comida);
+//        Property prop = model.createProperty(propertyURI);
+//        Resource persona1 = model.createResource("http://xmlns.com/foaf/0.1/person");
+//
+//        // le añade las propiedades
+//        Resource johnSmith  = model.createResource(personURI)
+//             .addProperty(VCARD.FN, fullName)
+//             .addProperty(VCARD.N, 
+//                      model.createResource()
+//                           .addProperty(VCARD.Given, givenName)
+//                           .addProperty(VCARD.Family, familyName));
+//        
+//        johnSmith.addProperty(prop, persona1);
+//        
+//        
+//        Resource mikeJohnson = model.createResource(person2URI)
+//        		.addProperty(VCARD.FN, fullName2)
+//                .addProperty(VCARD.N, 
+//                         model.createResource()
+//                              .addProperty(VCARD.Given, givenName2)
+//                              .addProperty(VCARD.Family, familyName2));
+//        		
+//        Resource aliceMcTetis = model.createResource(person3URI)
+//        		.addProperty(VCARD.FN, fullName3)
+//                .addProperty(VCARD.N, 
+//                         model.createResource()
+//                              .addProperty(VCARD.Given, givenName3)
+//                              .addProperty(VCARD.Family, familyName3));
+//        
+//        
+//        Resource relacion = model.createResource("http://xmlns.com/foaf/0.1/knows")
+//        		.addProperty(VCARD.FN, mikeJohnson)
+//        		.addProperty(VCARD.FN, aliceMcTetis);
+//        		
+//        
+//        Resource tarradellas = model.createResource(casaURI)
+//        		.addProperty(VCARD.FN, numHabitaciones)
+//        		.addProperty(VCARD.FN, tamano)
+//        		.addProperty(VCARD.FN, comida);
         
         
         return model;

@@ -34,7 +34,7 @@ public class SemanticGenerator {
 	
 	public static void main(String[] args) {
 		
-		String pathZaguan = "./recordscd";
+		String pathZaguan = "recordsdc";
 		
 		File documents =  new File(pathZaguan);
 		File[] listFiles = documents.listFiles();
