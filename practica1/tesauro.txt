@@ -8,7 +8,6 @@ musica-canción
 musica-musical
 musica-artística
 musica-rock
-
 videojuegos
 videojuegos-gráfica
 videojuegos-plataformas
@@ -18,11 +17,8 @@ videojuegos-jugabilidad
 videojuegos-3D
 videojuegos-videojuego
 videojuego-renderizado
-
 diseño
-
 personajes
-
 Guerra
 Guerra-EJÉRCITO
 Guerra-tropas
@@ -36,7 +32,6 @@ historia-histórico
 historia-románica
 historia-Media
 historia-medieval
-
 arquitectura
 arquitectura-construccion
 arquitectura-construcción
@@ -51,7 +46,6 @@ arquitectura-Edificios
 arquitectura-escultura
 arquitectura-ciudades
 arquitectura-arquitectónico
-
 energías
 energías-Energías renovables
 energías-energías renovables

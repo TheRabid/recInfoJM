@@ -50,7 +50,6 @@ public class SemanticGenerator {
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
 		temas = new ArrayList<String>();
-		generateTesauro("tesauro.txt");
 
 		String pathZaguan = "./recordsdc";
 		File[] listFiles = new File(pathZaguan).listFiles();
@@ -61,7 +60,7 @@ public class SemanticGenerator {
 		model.setNsPrefix("skos", SKOS_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
         document = model.createResource(DOMAIN_PATH + "Document");
-        concept = model.createResource(SKOS_PATH + "concept");
+        concept = model.createResource(DOMAIN_PATH + "Concept");
         type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
         name = model.createProperty(DOMAIN_PATH + "Nombre");
@@ -81,9 +80,10 @@ public class SemanticGenerator {
 			addDocument(f);
 		}
 
+		generateTesauro("tesauro.txt");
 		
-//        model.write(System.out); 
-        model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
+//		model.write(System.out); 
+		model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 		
         
         for (String s:temas) {
@@ -200,21 +200,16 @@ public class SemanticGenerator {
 			Scanner s = new Scanner(new File(tesauroPath));
 			Resource used = null;
 			while (s.hasNextLine()) {
-				
-				String line = s.nextLine();
-				if (!line.equals("")) {
-					String[] words = line.split("-");
-	
-					if (words.length == 1) {		// Tema
-						System.out.println(words[0]);
-						temas.add(words[0]);
-						used = generateConcept(words[0]);
-					}
-					else if (words.length == 2) {		//SubTema
-						System.out.println(words[0] + "   " + words[1]);
-						temas.add(words[1]);
-						generateSubconcept(used, words[1]);
-					}
+
+				String[] line = s.nextLine().split("-");
+
+				if (line.length == 1) {		// Tema
+					temas.add(line[0]);
+					used = generateConcept(line[0]);
+				}
+				else if (line.length == 2) {		//SubTema
+					temas.add(line[1]);
+					generateSubconcept(used, line[1]);
 				}
 
 			}
@@ -225,11 +220,11 @@ public class SemanticGenerator {
 	}
 	
 	private static Resource generateConcept(String tema){
-		return model.createResource(tema).addProperty(type, concept);
+		return model.createResource(DOMAIN_PATH + tema).addProperty(type, concept);
 	}
 	
 	private static void generateSubconcept(Resource original, String tema){
-		model.createResource(tema).addProperty(type, concept).addProperty(narrower, original);
+		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(narrower, original);
 	}
 	
 }
