@@ -42,6 +42,7 @@ public class SemanticGenerator {
 	public static Property date;
 	public static Property language;
 	public static Property narrower;
+	public static Property hasConcept;
 
 	
 	private static ArrayList<String> temas;
@@ -73,16 +74,16 @@ public class SemanticGenerator {
         date = model.createProperty(DOMAIN_PATH + "Fecha");
         language = model.createProperty(DOMAIN_PATH + "Idioma");
         narrower = model.createProperty(SKOS_PATH + "narrower");
+        hasConcept = model.createProperty(DOMAIN_PATH + "hasConcept");
 
+        generateTesauro("tesauro.txt");
         
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
 			addDocument(f);
 		}
 
-		generateTesauro("tesauro.txt");
-		
-//		model.write(System.out); 
+		model.write(System.out); 
 		model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 		
         
@@ -114,7 +115,13 @@ public class SemanticGenerator {
 			
 			// Title
 			if (doc.getElementsByTagName("dc:title").item(0) != null) {
-				newDocument.addProperty(title,  doc.getElementsByTagName("dc:title").item(0).getTextContent());
+				String temp = doc.getElementsByTagName("dc:title").item(0).getTextContent();
+				newDocument.addProperty(title,  temp);
+				for(String a : temas){
+					if(temp.toLowerCase().contains(a.toLowerCase())){
+						newDocument.addProperty(hasConcept, DOMAIN_PATH + a);
+					}
+				}
 			}
 	
 			
@@ -147,7 +154,13 @@ public class SemanticGenerator {
 			
 			// Description
 			if (doc.getElementsByTagName("dc:description").item(0) != null) {
-				newDocument.addProperty(description,  doc.getElementsByTagName("dc:description").item(0).getTextContent());
+				String desc = doc.getElementsByTagName("dc:description").item(0).getTextContent();
+				newDocument.addProperty(description,  desc);
+				for(String a : temas){
+					if(desc.toLowerCase().contains(a.toLowerCase())){
+						newDocument.addProperty(hasConcept, DOMAIN_PATH + a);
+					}
+				}
 			}
 	
 			// Publisher
@@ -205,11 +218,11 @@ public class SemanticGenerator {
 
 				if (line.length == 1) {		// Tema
 					temas.add(line[0]);
-					used = generateConcept(line[0]);
+					used = generateConcept(line[0].toLowerCase());
 				}
 				else if (line.length == 2) {		//SubTema
 					temas.add(line[1]);
-					generateSubconcept(used, line[1]);
+					generateSubconcept(used, line[1].toLowerCase());
 				}
 
 			}
