@@ -15,12 +15,12 @@ import com.hp.hpl.jena.util.FileManager;
 public class AccesoSPARQL {
 
 	/**
-	 * ejecución de consultas sparql
+	 * ejecuciï¿½n de consultas sparql
 	 */
 	public static void main(String args[]) {
 		
 		// cargamos el fichero deseado
-		Model model = FileManager.get().loadModel("card.rdf");
+		Model model = FileManager.get().loadModel("Modelo.rdf");
 
 		//definimos la consulta (tipo query)
 		String queryString = "Select ?x ?y ?z WHERE  {?x ?y ?z }" ;

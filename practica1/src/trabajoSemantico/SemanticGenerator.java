@@ -4,11 +4,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -34,14 +39,19 @@ public class SemanticGenerator {
 	public static Property publisher;
 	public static Property date;
 	public static Property language;
+	
+	private static ArrayList<String> temas;
 
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
+		temas = new ArrayList<String>();
+		generateTesauro("tesauro.txt");
+
 		String pathZaguan = "./recordsdc";
 		File[] listFiles = new File(pathZaguan).listFiles();
 		
-		
+				
         model = ModelFactory.createDefaultModel();
 		model.setNsPrefix("recinfo", DOMAIN_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
@@ -61,11 +71,12 @@ public class SemanticGenerator {
         
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
-			addDocument(f);
+//			addDocument(f);
 		}
-	
+
 		
-        model.write(System.out); 
+//        model.write(System.out); 
+        model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 		
 	}
 	
@@ -101,20 +112,26 @@ public class SemanticGenerator {
 			
 			// Creator
 			if (doc.getElementsByTagName("dc:creator").item(0) != null) {
-				if (doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ").length == 1) {
-					Resource albmos = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""))
-							.addProperty(name,  doc.getElementsByTagName("dc:creator").item(0).getTextContent())
-							.addProperty(type, person);
-					
-					newDocument.addProperty(autor, DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""));
-				}
-				else if (doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ").length == 2) {
-					Resource albmos = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""))
-							.addProperty(name,  doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ")[1])
-							.addProperty(lastName,  doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ")[0])
-							.addProperty(type, person);
-					
-					newDocument.addProperty(autor, DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""));
+				
+				NodeList nodes = doc.getElementsByTagName("dc:creator");
+//				if (nodes.getLength()>1) System.out.println("JAIME PARGUELA");
+				
+				for (int i=0; i<nodes.getLength(); i++) {
+					if (doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ").length == 1) {
+						Resource albmos = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""))
+								.addProperty(name,  doc.getElementsByTagName("dc:creator").item(i).getTextContent())
+								.addProperty(type, person);
+						
+						newDocument.addProperty(autor, DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""));
+					}
+					else if (doc.getElementsByTagName("dc:creator").item(i).getTextContent().split(", ").length == 2) {
+						Resource albmos = model.createResource(DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""))
+								.addProperty(name,  doc.getElementsByTagName("dc:creator").item(i).getTextContent().split(", ")[1])
+								.addProperty(lastName,  doc.getElementsByTagName("dc:creator").item(i).getTextContent().split(", ")[0])
+								.addProperty(type, person);
+						
+						newDocument.addProperty(autor, DOMAIN_PATH + doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""));
+					}
 				}
 			}
 	
@@ -167,5 +184,36 @@ public class SemanticGenerator {
 		}
 		
 	}
+	
+	
+	
+	private static void generateTesauro(String tesauroPath) {
+		
+		try {
+			Scanner s = new Scanner(new File(tesauroPath));
+			
+			while (s.hasNextLine()) {
+				String[] line = s.nextLine().split("-");
+
+				if (line.length == 1) {		// Tema
+					System.out.println(line[0]);
+					temas.add(line[0]);
+				}
+				else if (line.length == 2) {		//SubTema
+					System.out.println(line[0] + "   " + line[1]);
+					temas.add(line[1]);
+				}
+
+			}
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
+	
 	
 }
