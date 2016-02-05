@@ -71,13 +71,17 @@ public class SemanticGenerator {
         
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
-//			addDocument(f);
+			addDocument(f);
 		}
 
 		
 //        model.write(System.out); 
         model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 		
+        
+        for (String s:temas) {
+        	System.out.println(s);
+        }
 	}
 	
 	
@@ -193,15 +197,19 @@ public class SemanticGenerator {
 			Scanner s = new Scanner(new File(tesauroPath));
 			
 			while (s.hasNextLine()) {
-				String[] line = s.nextLine().split("-");
-
-				if (line.length == 1) {		// Tema
-					System.out.println(line[0]);
-					temas.add(line[0]);
-				}
-				else if (line.length == 2) {		//SubTema
-					System.out.println(line[0] + "   " + line[1]);
-					temas.add(line[1]);
+				String line = s.nextLine();
+				
+				if (!line.equals("")) {
+					String[] words = line.split("-");
+	
+					if (words.length == 1) {		// Tema
+//						System.out.println(words[0]);
+						temas.add(words[0]);
+					}
+					else if (words.length == 2) {		//SubTema
+//						System.out.println(words[0] + "   " + words[1]);
+						temas.add(words[1]);
+					}
 				}
 
 			}

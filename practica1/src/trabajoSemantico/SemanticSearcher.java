@@ -12,6 +12,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 public class SemanticSearcher {
+	
+	public static final String DOMAIN_PATH = "http://www.recInfo.com/";
+
 
 	/**
 	 * ejecuci�n de consultas sparql
@@ -22,7 +25,11 @@ public class SemanticSearcher {
 		Model model = FileManager.get().loadModel("Modelo.rdf");
 
 		// definimos la consulta (tipo query)
-		String queryString = "Select ?x ?y ?z WHERE  {?x ?y ?z }";
+		String queryString = ""
+				+ "PREFIX recinfo: " + DOMAIN_PATH + "\n" +
+				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+ "\n" +
+		        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  " + "\n"
+				+ "Select ?x ?y WHERE  { ?x recinfo:Autor ?y }";
 
 		// ejecutamos la consulta y obtenemos los resultados
 		Query query = QueryFactory.create(queryString);
@@ -34,12 +41,14 @@ public class SemanticSearcher {
 				QuerySolution soln = results.nextSolution();
 				Resource x = soln.getResource("x");
 				Resource y = soln.getResource("y");
-				RDFNode z = soln.get("z");
+				/*RDFNode z = soln.get("z");
 				if (z.isLiteral()) {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.toString());
 				} else {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.asResource().getURI());
-				}
+				}*/
+				
+				System.out.println(x.getURI() + " - " + y.getURI());
 			}
 		} finally
 
@@ -49,7 +58,6 @@ public class SemanticSearcher {
 
 		System.out.println("----------------------------------------");
 
-		
 	}
 
 }
