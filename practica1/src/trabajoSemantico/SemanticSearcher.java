@@ -26,10 +26,8 @@ public class SemanticSearcher {
 
 		// definimos la consulta (tipo query)
 		String queryString = ""
-				+ "PREFIX recinfo: " + DOMAIN_PATH + "\n" +
-				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> "+ "\n" +
-		        "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  " + "\n"
-				+ "Select ?x ?y WHERE  { ?x recinfo:Autor ?y }";
+				+ " PREFIX recinfo: <http://www.recInfo.com/> "
+				+ " Select ?x ?y WHERE  { ?x recinfo:Autor ?y } ";
 
 		// ejecutamos la consulta y obtenemos los resultados
 		Query query = QueryFactory.create(queryString);
@@ -40,7 +38,8 @@ public class SemanticSearcher {
 			for (; results.hasNext();) {
 				QuerySolution soln = results.nextSolution();
 				Resource x = soln.getResource("x");
-				Resource y = soln.getResource("y");
+				RDFNode z = soln.get("y");
+//				Resource y = soln.getResource("y");
 				/*RDFNode z = soln.get("z");
 				if (z.isLiteral()) {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.toString());
@@ -48,7 +47,7 @@ public class SemanticSearcher {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.asResource().getURI());
 				}*/
 				
-				System.out.println(x.getURI() + " - " + y.getURI());
+				System.out.println(x.getURI() + " - " + z);
 			}
 		} finally
 

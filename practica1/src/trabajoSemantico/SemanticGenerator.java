@@ -26,9 +26,11 @@ public class SemanticGenerator {
 
 	public static Model model;
 	public static final String DOMAIN_PATH = "http://www.recInfo.com/";
+	public static final String SKOS_PATH = "http://www.w3.org/TR/skos-primer/";
 	
 	public static Resource person;
 	public static Resource document;
+	public static Resource concept;
 	public static Property name;
 	public static Property lastName;
 	public static Property type;
@@ -39,6 +41,8 @@ public class SemanticGenerator {
 	public static Property publisher;
 	public static Property date;
 	public static Property language;
+	public static Property narrower;
+
 	
 	private static ArrayList<String> temas;
 
@@ -54,8 +58,10 @@ public class SemanticGenerator {
 				
         model = ModelFactory.createDefaultModel();
 		model.setNsPrefix("recinfo", DOMAIN_PATH);
+		model.setNsPrefix("skos", SKOS_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
         document = model.createResource(DOMAIN_PATH + "Document");
+        concept = model.createResource(SKOS_PATH + "concept");
         type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
         name = model.createProperty(DOMAIN_PATH + "Nombre");
@@ -67,6 +73,7 @@ public class SemanticGenerator {
         publisher = model.createProperty(DOMAIN_PATH + "Publicacion");
         date = model.createProperty(DOMAIN_PATH + "Fecha");
         language = model.createProperty(DOMAIN_PATH + "Idioma");
+        narrower = model.createProperty(SKOS_PATH + "narrower");
 
         
         System.out.println("Leyendo files");
@@ -103,10 +110,7 @@ public class SemanticGenerator {
 			if (doc.getElementsByTagName("dc:identifier").item(0) != null) {
 				newDocument = model.createResource(doc.getElementsByTagName("dc:identifier").item(0).getTextContent())
 						.addProperty(type, document);
-			}
-			
-			
-			
+			}	
 			
 			// Title
 			if (doc.getElementsByTagName("dc:title").item(0) != null) {
@@ -192,36 +196,40 @@ public class SemanticGenerator {
 	
 	
 	private static void generateTesauro(String tesauroPath) {
-		
 		try {
 			Scanner s = new Scanner(new File(tesauroPath));
-			
+			Resource used = null;
 			while (s.hasNextLine()) {
-				String line = s.nextLine();
 				
+				String line = s.nextLine();
 				if (!line.equals("")) {
 					String[] words = line.split("-");
 	
 					if (words.length == 1) {		// Tema
-//						System.out.println(words[0]);
+						System.out.println(words[0]);
 						temas.add(words[0]);
+						used = generateConcept(words[0]);
 					}
 					else if (words.length == 2) {		//SubTema
-//						System.out.println(words[0] + "   " + words[1]);
+						System.out.println(words[0] + "   " + words[1]);
 						temas.add(words[1]);
+						generateSubconcept(used, words[1]);
 					}
 				}
 
 			}
-			
+			s.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
-		
-		
-		
+		}		
 	}
 	
+	private static Resource generateConcept(String tema){
+		return model.createResource(tema).addProperty(type, concept);
+	}
 	
+	private static void generateSubconcept(Resource original, String tema){
+		model.createResource(tema).addProperty(type, concept).addProperty(narrower, original);
+	}
 	
 }
