@@ -50,7 +50,6 @@ public class SemanticGenerator {
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
 		temas = new ArrayList<String>();
-		generateTesauro("tesauro.txt");
 
 		String pathZaguan = "./recordsdc";
 		File[] listFiles = new File(pathZaguan).listFiles();
@@ -61,7 +60,7 @@ public class SemanticGenerator {
 		model.setNsPrefix("skos", SKOS_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
         document = model.createResource(DOMAIN_PATH + "Document");
-        concept = model.createResource(SKOS_PATH + "concept");
+        concept = model.createResource(DOMAIN_PATH + "Concept");
         type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
         name = model.createProperty(DOMAIN_PATH + "Nombre");
@@ -78,12 +77,13 @@ public class SemanticGenerator {
         
         System.out.println("Leyendo files");
 		for (File f:listFiles) {
-//			addDocument(f);
+			addDocument(f);
 		}
 
+		generateTesauro("tesauro.txt");
 		
-//        model.write(System.out); 
-        model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
+		model.write(System.out); 
+//      model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 		
 	}
 	
@@ -199,12 +199,10 @@ public class SemanticGenerator {
 				String[] line = s.nextLine().split("-");
 
 				if (line.length == 1) {		// Tema
-					System.out.println(line[0]);
 					temas.add(line[0]);
 					used = generateConcept(line[0]);
 				}
 				else if (line.length == 2) {		//SubTema
-					System.out.println(line[0] + "   " + line[1]);
 					temas.add(line[1]);
 					generateSubconcept(used, line[1]);
 				}
@@ -217,11 +215,11 @@ public class SemanticGenerator {
 	}
 	
 	private static Resource generateConcept(String tema){
-		return model.createResource(tema).addProperty(type, concept);
+		return model.createResource(DOMAIN_PATH + tema).addProperty(type, concept);
 	}
 	
 	private static void generateSubconcept(Resource original, String tema){
-		model.createResource(tema).addProperty(type, concept).addProperty(narrower, original);
+		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(narrower, original);
 	}
 	
 }
