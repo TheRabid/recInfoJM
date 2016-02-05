@@ -7,3 +7,17 @@ musica-canción
 musica-musical
 musica-artística
 musica-rock
+
+videojuegos
+videojuegos-gráfica
+videojuegos-plataformas
+videojuegos-virtual
+videojuegos-virtuales
+videojuegos-jugabilidad
+videojuegos-3D
+videojuegos-videojuego
+videojuego-renderizado
+
+diseño
+
+personajes
