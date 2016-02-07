@@ -77,12 +77,12 @@ public class Consultas {
 			+ " SELECT DISTINCT ?id WHERE {"
 			+ "   ?doc recinfo:Identificador ?id."
 			+ "   ?doc recinfo:hasConcept ?concept."
-			+ "   { ?concept recinfo:conceptName \"arquitectura\". } "
-			+ "   UNION"
 			+ "   { ?concept skos:broader ?sub . "
 			+ "     ?sub recinfo:conceptName \"arquitectura\" } "
 			+ "   UNION"
 			+ "   { ?concept recinfo:conceptName \"edad media\". } "
+			+ "   UNION"
+			+ "   { ?concept recinfo:conceptName \"gotica\". } "
 			+ " } ";
 	
 	public static String[] identificadores = {"13-2" , "02-4" , "09-3" , "07-2" , "05-5"};

@@ -30,17 +30,7 @@ historia-gótico
 historia-gótica
 arquitectura
 arquitectura-construccion
-arquitectura-construcción
-arquitectura-Monasterio
-arquitectura-arquitecto
-arquitectura-monumentalidad
 arquitectura-arquitecturas
-arquitectura-Castillo
-arquitectura-Monumento
-arquitectura-torre
-arquitectura-Edificios
-arquitectura-escultura
-arquitectura-ciudades
 arquitectura-arquitectónico
 energías
 energías-Energías renovables
