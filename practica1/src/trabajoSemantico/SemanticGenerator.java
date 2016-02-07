@@ -59,7 +59,7 @@ public class SemanticGenerator {
 		model.setNsPrefix("skos", SKOS_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
 		document = model.createResource(DOMAIN_PATH + "Document");
-		concept = model.createResource(DOMAIN_PATH + "Concept");
+		concept = model.createResource(SKOS_PATH + "Concept");
 		type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 		name = model.createProperty(DOMAIN_PATH + "Nombre");
