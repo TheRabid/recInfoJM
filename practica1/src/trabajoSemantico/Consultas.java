@@ -65,9 +65,6 @@ public class Consultas {
 			+ "   UNION"
 			+ "   { ?concept skos:broader ?sub . "
 			+ "     ?sub recinfo:conceptName \"videojuegos\". } "
-			+ "   UNION"
-			+ "   { ?concept recinfo:conceptName \"diseño\" . "
-			+ "     ?concept recinfo:conceptName \"personajes\". } "
 			+ "   ?doc recinfo:Fecha ?year"
 			+ "   FILTER (xsd:integer(?year) > 2010 && xsd:integer(?year) < 2016) "
 			+ " }";
@@ -85,11 +82,7 @@ public class Consultas {
 			+ "   { ?concept skos:broader ?sub . "
 			+ "     ?sub recinfo:conceptName \"arquitectura\" } "
 			+ "   UNION"
-			+ "   { ?concept recinfo:conceptName \"historia\". } "
-			+ "   UNION"
-			+ "   { ?concept skos:broader ?sub . "
-			+ "     ?sub recinfo:conceptName \"historia\" } "
-			+ "     "
+			+ "   { ?concept recinfo:conceptName \"edad media\". } "
 			+ " } ";
 	
 	public static String[] identificadores = {"13-2" , "02-4" , "09-3" , "07-2" , "05-5"};
