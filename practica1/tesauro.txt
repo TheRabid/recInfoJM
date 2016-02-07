@@ -16,15 +16,11 @@ videojuegos-virtuales
 videojuegos-jugabilidad
 videojuegos-3D
 videojuegos-videojuego
-videojuego-renderizado
+videojuegos-renderizado
 diseño
 personajes
 Guerra
 Guerra-EJÉRCITO
-Guerra-tropas
-Guerra-guerrillas
-Guerra-lucha
-Guerra-militar
 España
 España-ESPAÑOL
 historia
@@ -48,6 +44,6 @@ arquitectura-ciudades
 arquitectura-arquitectónico
 energías
 energías-Energías renovables
-energías-energías renovables
 energías-energía cinética
+energías-energía renovable
 energías-energía

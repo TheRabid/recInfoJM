@@ -94,12 +94,9 @@ public class SemanticGenerator {
 			addDocument(f);
 		}
 
-		model.write(System.out);
 		model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
 
-		for (String s : temas) {
-			System.out.println(s);
-		}
+		
 	}
 
 	public static void addDocument(File f) {
