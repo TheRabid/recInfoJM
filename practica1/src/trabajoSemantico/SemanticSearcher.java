@@ -25,9 +25,24 @@ public class SemanticSearcher {
 		Model model = FileManager.get().loadModel("Modelo.rdf");
 
 		// definimos la consulta (tipo query)
+//		String queryString = ""
+//				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
+//				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
+//				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+//				+ " SELECT ?x WHERE  { \n"
+//				+ " ?x rdf:type recinfo:Document. \n"
+//				+ " ?x skos:narrower \"http://www.recInfo.com/arquitectura\". \n"
+//				+ " } ";
+		
 		String queryString = ""
-				+ " PREFIX recinfo: <http://www.recInfo.com/> "
-				+ " Select ?x ?y WHERE  { ?x recinfo:Autor ?y } ";
+				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
+				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
+				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ " SELECT ?x ?y WHERE  { \n"
+				+ " ?x rdf:type recinfo:Document. \n"
+				+ " ?x recinfo:hasConcept ?y. \n"
+				+ " ?y skos:narrower recinfo:guerra. \n"
+				+ " } ";
 
 		// ejecutamos la consulta y obtenemos los resultados
 		Query query = QueryFactory.create(queryString);
