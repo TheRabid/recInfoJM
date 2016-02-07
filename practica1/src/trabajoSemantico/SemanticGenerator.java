@@ -127,7 +127,8 @@ public class SemanticGenerator {
 				String temp = doc.getElementsByTagName("dc:title").item(0).getTextContent();
 				newDocument.addProperty(title, temp);
 				for (String a : temas) {
-					if (normalize(temp).contains(a)) {
+//					if (normalize(temp).contains(a)) {
+					if (normalize(temp).matches(".*([^A-Za-z]|^)"+a+"([^A-Za-z]|$).*")) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
@@ -172,7 +173,8 @@ public class SemanticGenerator {
 				String desc = doc.getElementsByTagName("dc:description").item(0).getTextContent();
 				newDocument.addProperty(description, desc);
 				for (String a : temas) {
-					if (normalize(desc).contains(a)) {
+//					if (normalize(desc).contains(a)) {
+					if (normalize(desc).matches(".*([^A-Za-z]|^)"+a+"([^A-Za-z]|$).*")) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}

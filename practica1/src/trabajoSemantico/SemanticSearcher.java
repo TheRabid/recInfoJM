@@ -1,5 +1,7 @@
 package trabajoSemantico;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -8,7 +10,6 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.util.FileManager;
 
 public class SemanticSearcher {
@@ -34,17 +35,48 @@ public class SemanticSearcher {
 //				+ " ?x skos:narrower \"http://www.recInfo.com/arquitectura\". \n"
 //				+ " } ";
 		
+		
+		/*
+		//Consulta 13_02
 		String queryString = ""
 				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
 				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
 				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-				+ " select distinct ?id ?concept where {"
-				+ " ?doc recinfo:Identificador ?id."
-				+ " ?doc recinfo:hasConcept ?concept."
-				+ " ?concept recinfo:conceptName \"musica\". "
-				+ " ?doc recinfo:Autor ?autor."
-				+ " ?autor recinfo:Nombre \"Javier\""
-				+ " }";
+				+ " SELECT DISTINCT ?id WHERE {"
+				+ "   ?doc recinfo:Identificador ?id."
+				+ "   ?doc recinfo:hasConcept ?concept."
+				+ "   { ?concept recinfo:conceptName \"musica\". } "
+				+ "   UNION"
+				+ "   { ?concept skos:broader ?sub . "
+				+ "     ?sub recinfo:conceptName \"musica\" }"
+				+ "   ?doc recinfo:Autor ?autor."
+				+ "   ?autor recinfo:Nombre ?name"
+				+ "   FILTER regex (?name, \".*Javier.*\", \"i\") "
+				+ " }"
+				+ " ORDER BY ?id ";
+		*/
+		
+		
+		 //Consulta 02_04
+		 String queryString = ""
+				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
+				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
+				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ " SELECT DISTINCT ?id where {"
+				+ "    ?doc recinfo:hasConcept ?concept . "
+				+ "    ?doc recinfo:Identificador ?id "
+				+ "    { ?concept recinfo:conceptName \"guerra\" }"
+				+ "    UNION"
+				+ "    { ?concept skos:broader ?sub . "
+				+ "      ?sub recinfo:conceptName \"guerra\" } "
+				+ "    UNION"
+				+ "    { ?concept recinfo:conceptName \"españa\" }"
+				+ "    UNION"
+				+ "    { ?concept skos:broader ?sub . "
+				+ "      ?sub recinfo:conceptName \"españa\" } "
+				+ " }"
+				+ " ORDER BY ?id ";
+		
 
 		// ejecutamos la consulta y obtenemos los resultados
 		Query query = QueryFactory.create(queryString);
@@ -54,8 +86,7 @@ public class SemanticSearcher {
 			ResultSet results = qexec.execSelect();
 			for (; results.hasNext();) {
 				QuerySolution soln = results.nextSolution();
-				RDFNode x = soln.get("id");
-				RDFNode y = soln.get("concept");
+				
 //				RDFNode z = soln.get("y");
 //				Resource y = soln.getResource("y");
 				/*RDFNode z = soln.get("z");
@@ -65,7 +96,16 @@ public class SemanticSearcher {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.asResource().getURI());
 				}*/
 				
-				System.out.println(x.toString() + " - " + y.toString());
+				/*RDFNode x = soln.get("id");
+				RDFNode y = soln.get("concept");
+				System.out.println(x.toString() + "\t" + y.toString());*/
+				
+				Iterator<String> it = soln.varNames();
+				while (it.hasNext()) {
+					System.out.printf(soln.get(it.next()) + "    ");
+				} System.out.println();
+				
+				
 			}
 		} finally
 
