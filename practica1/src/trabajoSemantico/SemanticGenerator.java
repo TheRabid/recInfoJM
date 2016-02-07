@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -126,7 +127,7 @@ public class SemanticGenerator {
 				String temp = doc.getElementsByTagName("dc:title").item(0).getTextContent();
 				newDocument.addProperty(title, temp);
 				for (String a : temas) {
-					if (temp.toLowerCase().contains(a.toLowerCase())) {
+					if (normalize(temp).contains(a)) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
@@ -171,7 +172,7 @@ public class SemanticGenerator {
 				String desc = doc.getElementsByTagName("dc:description").item(0).getTextContent();
 				newDocument.addProperty(description, desc);
 				for (String a : temas) {
-					if (desc.toLowerCase().contains(a.toLowerCase())) {
+					if (normalize(desc).contains(a)) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
@@ -228,12 +229,12 @@ public class SemanticGenerator {
 				String[] line = s.nextLine().split("-");
 
 				if (line.length == 1) { // Tema
-					temas.add(line[0].toLowerCase());
-					used = generateConcept(line[0].toLowerCase());
+					temas.add(normalize(line[0]));
+					used = generateConcept(normalize(line[0]));
 				} else if (line.length == 2) { // SubTema
-					temas.add(line[1].toLowerCase());
-					generateSubconcept(used, line[1].toLowerCase());
-					used.addProperty(narrower, line[1].toLowerCase());
+					temas.add(normalize(line[1]));
+					generateSubconcept(used, normalize(line[1]));
+					used.addProperty(narrower, normalize(line[1]));
 				}
 
 			}
@@ -256,4 +257,11 @@ public class SemanticGenerator {
 		concepts.put(DOMAIN_PATH + tema, temp);
 	}
 
+	private static String normalize(String s) {
+		s = s.toLowerCase();
+		s = Normalizer.normalize(s, Normalizer.Form.NFD);
+		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+		return s;
+	}
+	
 }

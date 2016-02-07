@@ -1,5 +1,7 @@
 package test;
 
+import java.text.Normalizer;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -15,7 +17,6 @@ public class AccesoRDF {
 	 * accede de diferentes maneras a las propiedades de un modelo rdf
 	 */
 	public static void main(String args[]) {
-
 		// cargamos el fichero deseado
 		Model model = FileManager.get().loadModel("card.rdf");
 
@@ -27,8 +28,7 @@ public class AccesoRDF {
 			Statement st = it.next();
 
 			if (st.getObject().isLiteral()) {
-				System.out.println(st.getSubject().getURI() + " - "
-						+ st.getPredicate().getURI() + " - "
+				System.out.println(st.getSubject().getURI() + " - " + st.getPredicate().getURI() + " - "
 						+ st.getLiteral().toString());
 			}
 		}
@@ -37,19 +37,16 @@ public class AccesoRDF {
 
 		// mostramos los valores de todas las propiedades de un recurso
 		// determinado
-		Resource res = model
-				.getResource("http://dig.csail.mit.edu/2008/webdav/timbl/foaf.rdf");
+		Resource res = model.getResource("http://dig.csail.mit.edu/2008/webdav/timbl/foaf.rdf");
 		it = res.listProperties();
 		while (it.hasNext()) {
 			Statement st = it.next();
 
 			if (st.getObject().isLiteral()) {
-				System.out.println(st.getSubject().getURI() + " - "
-						+ st.getPredicate().getURI() + " - "
+				System.out.println(st.getSubject().getURI() + " - " + st.getPredicate().getURI() + " - "
 						+ st.getLiteral().toString());
 			} else {
-				System.out.println(st.getSubject().getURI() + " - "
-						+ st.getPredicate().getURI() + " - "
+				System.out.println(st.getSubject().getURI() + " - " + st.getPredicate().getURI() + " - "
 						+ st.getResource().getURI());
 			}
 		}
@@ -57,8 +54,7 @@ public class AccesoRDF {
 		System.out.println("----------------------------------------");
 
 		// mostramos todos los recursos que contienen una propiedad determinada
-		Property prop = model
-				.getProperty("http://purl.org/dc/elements/1.1/title");
+		Property prop = model.getProperty("http://purl.org/dc/elements/1.1/title");
 		ResIterator ri = model.listSubjectsWithProperty(prop);
 		while (ri.hasNext()) {
 			Resource r = ri.next();
@@ -74,11 +70,12 @@ public class AccesoRDF {
 			Statement st = it.next();
 
 			if (st.getObject().isLiteral()) {
-				System.out.println(st.getSubject().getURI() + " - "
-						+ st.getPredicate().getURI() + " - "
+				System.out.println(st.getSubject().getURI() + " - " + st.getPredicate().getURI() + " - "
 						+ st.getLiteral().toString());
 			}
 		}
 	}
+
+	
 
 }
