@@ -1,0 +1,189 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphics}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[demo]{graphicx}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{framed}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.85]{beramono}
+\usepackage{listings}
+\lstset{language=SQL,morekeywords={PREFIX,java,rdf,rdfs,UNION,skos,recinfo,FILTER,regex}}
+
+\begin{document}
+
+\title{Sistema de Recuperación Semántico}
+\author{
+	Jaime Ruiz-Borau Vizárraga\\
+	\texttt{546751}
+	\and
+	Alberto Sabater Bailón\\
+	\texttt{546297}
+	}
+\date{}
+\maketitle
+
+\section{El sistema de recuperación semántico}
+\subsection{Cambios realizados sobre el RDFS original}
+\paragraph{Supresión de la etiqueta 'subclass of':}En el modelo que se diseñó inicialmente, en las clases Documento y Persona se especificaba concretamente que eran subclase de \textbf{Resource}. Dado que esta especificación resultaba redundante, se optó por suprimirla.
+\paragraph{Inclusión de una etiqueta 'Identificador':}Con el motivo de devolver el nombre del archivo completo del documento en cuestión, se incluyó una etiqueta en el modelo RDFS para el Documento que incluía este nombre. Dicha etiqueta es \textbf{Identificador} (ver fichero rdfs.xml para verla en detalle).
+\paragraph{Inclusión de una etiqueta 'Idioma':}Esta etiqueta no era estrictamente necesaria para las búsquedas SPARQL semánticas, pero se incluyó para hacer un modelo rdfs más completo.
+\subsection{Consultas SPARQL}
+\paragraph{Necesidad de información 13-2:}Me interesan los trabajos en relación con el mundo de la musica y els onido cuyo autor o director se llame Javier.
+\newline
+\begin{lstlisting}[captionpos=b, caption=Consulta SPARQL para la necesidad de información 13-2, label=lst:sparql,
+basicstyle=\ttfamily,frame=single]
+PREFIX recinfo: <http://www.recInfo.com/>
+PREFIX skos: <http://www.w3.org/TR/skos-primer/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?id WHERE {
+	?doc recinfo:Identificador ?id.
+	?doc recinfo:hasConcept ?concept.
+	{ ?concept recinfo:conceptName "musica". }
+	UNION
+	{ ?concept skos:broader ?sub .
+		?sub recinfo:conceptName "musica" }
+	?doc recinfo:Autor ?autor.
+	?autor recinfo:Nombre ?name
+	FILTER regex (?name, ".*Javier.*", "i")
+}
+\end{lstlisting}
+\newpage
+\paragraph{Necesidad de información 02-4:}Estoy interesado en el periodo histórico de la Guerra de Independencia (1808-1814). Me gustaría saber qué trabajos o artículos hay relacionados con este hecho englobados en la historia de España.
+\begin{lstlisting}[captionpos=b, caption=Consulta SPARQL para la necesidad de información 02-4, label=lst:sparql,
+basicstyle=\ttfamily,frame=single]
+PREFIX recinfo: <http://www.recInfo.com/>
+PREFIX skos: <http://www.w3.org/TR/skos-primer/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT DISTINCT ?id ?concept where {
+	?doc recinfo:hasConcept ?concept1 .
+	?doc recinfo:hasConcept ?concept2 .
+	?doc recinfo:hasConcept ?concept3 .
+	?doc recinfo:Identificador ?id .
+	{ ?concept1 recinfo:conceptName "guerra" }
+	UNION
+	{ ?concept1 skos:broader ?sub .
+	?sub recinfo:conceptName "guerra" }
+	{ ?concept3 recinfo:conceptName "espana" }
+	UNION
+	{ ?concept3 skos:broader ?sub .
+		?sub recinfo:conceptName "espana" }
+}
+\end{lstlisting}
+\paragraph{Necesidad de información 09-3:}Tesis que traten de energías renovables, en el período de 2010 a 2015.
+\begin{lstlisting}[captionpos=b, caption=Consulta SPARQL para la necesidad de información 09-3, label=lst:sparql,
+basicstyle=\ttfamily,frame=single]
+PREFIX recinfo: <http://www.recInfo.com/>
+PREFIX skos: <http://www.w3.org/TR/skos-primer/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?id WHERE {
+	?doc recinfo:Identificador ?id.
+	?doc recinfo:hasConcept ?concept.
+	{ ?concept recinfo:conceptName "energias". } 
+	UNION
+	{ ?concept skos:broader ?sub .
+		?sub recinfo:conceptName "energias" }
+	?doc recinfo:Fecha ?year
+	FILTER (xsd:integer(?year) > 2010 
+				&& xsd:integer(?year) < 2015)
+}
+\end{lstlisting}
+\newpage
+\paragraph{Necesidad de información 07-2:}Quiero documentos sobre desarrollo de videojuegos o diseño de personajes en los últimos 5 años.
+\begin{lstlisting}[captionpos=b, caption=Consulta SPARQL para la necesidad de información 07-2, label=lst:sparql,
+basicstyle=\ttfamily,frame=single]
+PREFIX recinfo: <http://www.recInfo.com/>
+PREFIX skos: <http://www.w3.org/TR/skos-primer/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?id WHERE {
+	?doc recinfo:Identificador ?id.
+	?doc recinfo:hasConcept ?concept.
+	{ ?concept recinfo:conceptName "videojuegos". }
+	UNION
+	{ ?concept skos:broader ?sub .
+		?sub recinfo:conceptName "videojuegos". }
+	?doc recinfo:Fecha ?year
+	FILTER (xsd:integer(?year) > 2010 
+				&& xsd:integer(?year) < 2016)
+}
+\end{lstlisting}
+\paragraph{Necesidad de información 05-5:}Me gustaría encontrar construcciones arquitectónicas situadas en España con elementos decorativos que pertenezcan tanto a la Edad Media como a la época gótica y cuyo estado de conservación sea óptimo.
+\begin{lstlisting}[captionpos=b, caption=Consulta SPARQL para la necesidad de información 05-5, label=lst:sparql,
+basicstyle=\ttfamily,frame=single]
+PREFIX recinfo: <http://www.recInfo.com/>
+PREFIX skos: <http://www.w3.org/TR/skos-primer/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT DISTINCT ?id WHERE {
+	?doc recinfo:Identificador ?id.
+	?doc recinfo:hasConcept ?concept.
+	?doc recinfo:hasConcept ?concept2.
+	?doc recinfo:hasConcept ?concept3.
+	{ ?concept skos:broader ?sub . 
+		?sub recinfo:conceptName "arquitectura" }
+	UNION
+	{ ?concept2 recinfo:conceptName "edad media". }
+	UNION
+	{ ?concept3 recinfo:conceptName "gotica". }
+}
+\end{lstlisting}
+\newpage
+\section{Resultados y comparativa con el sistema de recuperación tradicional}
+\paragraph{}Los resultados devueltos por el sistema de evaluación desarrollado en entregas anteriores han sido los siguientes:
+\begin{lstlisting}[captionpos=b, caption=Resultados,
+basicstyle=\ttfamily,frame=single]
+Information need: 13-2
+Precision: 0,182
+Recall: 0,267
+F1 Score: 0,216
+Precision@10: 0,300
+Mean Average Precision: 0,283
+**************************************
+Information need: 02-4
+Precision: 0,094
+Recall: 0,750
+F1 Score: 0,167
+Precision@10: 0,100
+Mean Average Precision: 0,115
+**************************************
+Information need: 09-3
+Precision: 0,280
+Recall: 0,292
+F1 Score: 0,286
+Precision@10: 0,100
+Mean Average Precision: 0,262
+**************************************
+Information need: 07-2
+Precision: 0,240
+Recall: 0,444
+F1 Score: 0,312
+Precision@10: 0,300
+Mean Average Precision: 0,328
+**************************************
+Information need: 05-5
+Precision: 0,000
+Recall: 0,000
+F1 Score: NaN
+Precision@10: 0,000
+Mean Average Precision: NaN
+**************************************
+TOTAL
+Precision: 0,159
+Recall: 0,351
+F1 Score: 0,219
+Precision@10: 0,160
+Mean Average Precision: NaN
+\end{lstlisting}
+\newpage
+\paragraph{}Comparativa...
+\end{document}
