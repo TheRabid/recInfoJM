@@ -16,6 +16,7 @@ videojuegos-renderizado
 diseño
 personajes
 Guerra
+Guerra-independencia
 Guerra-EJÉRCITO
 España
 España-ESPAÑOL
@@ -24,6 +25,9 @@ historia-histórico
 historia-románica
 historia-Edad Media
 historia-medieval
+historia-media
+historia-gótico
+historia-gótica
 arquitectura
 arquitectura-construccion
 arquitectura-construcción

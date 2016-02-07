@@ -55,11 +55,26 @@ public class SemanticGenerator {
 	private static ArrayList<String> temas;
 
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-
+		
+		
+		String rdf = "Modelo.rdf";
+		String skos = "";	// Unused
+		String docs = "./recordsdc";
+		
+		for (int i=0; i<args.length; i+=2) {
+			if (args[i].toLowerCase().equals("-rdf")) {
+				rdf = args[i+1];
+			}
+			if (args[i].toLowerCase().equals("-skos")) {
+				skos = args[i+1];
+			}
+			if (args[i].toLowerCase().equals("-docs")) {
+				docs = args[i+1];
+			}
+		}
+		
 		temas = new ArrayList<String>();
-
-		String pathZaguan = "./recordsdc";
-		File[] listFiles = new File(pathZaguan).listFiles();
+		File[] listFiles = new File(docs).listFiles();
 
 		model = ModelFactory.createDefaultModel();
 		model.setNsPrefix("recinfo", DOMAIN_PATH);
@@ -94,7 +109,7 @@ public class SemanticGenerator {
 			addDocument(f);
 		}
 
-		model.write(new PrintWriter("Modelo.rdf", "UTF-8"));
+		model.write(new PrintWriter(rdf, "UTF-8"));
 
 		
 	}
