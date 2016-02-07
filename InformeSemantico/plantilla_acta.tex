@@ -139,6 +139,7 @@ SELECT DISTINCT ?id WHERE {
 \end{lstlisting}
 \newpage
 \section{Resultados y comparativa con el sistema de recuperación tradicional}
+\subsection{Resultados}
 \paragraph{}Los resultados devueltos por el sistema de evaluación desarrollado en entregas anteriores han sido los siguientes:
 \begin{lstlisting}[captionpos=b, caption=Resultados,
 basicstyle=\ttfamily,frame=single]
@@ -185,5 +186,8 @@ Precision@10: 0,160
 Mean Average Precision: NaN
 \end{lstlisting}
 \newpage
-\paragraph{}Comparativa...
+\subsection{Comparativa de resultados}
+\paragraph{}Los resultados de este recuperador semántico son sustancialmente peores que los del recuperador tradicional implementado anteriormente por diversos motivos. 
+\paragraph{}En primer lugar, la ausencia de un ranking dificulta el acceso a los documentos más relevantes dentro de el conjunto de documentos devuelto. Esto se ve reflejado en la evaluación del sistema, especialmente en la prec@10 y Mean Average Precision. 
+\paragraph{}Por otro lado la construcción de tesauros permite filtrar las búsquedas por familias de palabras (sinonímia, palabras relacionadas, etc.), aunque algunas veces su uso deriva en la devolución de resultados no relevantes.
 \end{document}

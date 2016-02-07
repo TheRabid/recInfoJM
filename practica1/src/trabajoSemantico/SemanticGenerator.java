@@ -64,13 +64,15 @@ public class SemanticGenerator {
 
 	/**
 	 * Metodo main de la clase SemanticGenerator Puede ser usado mediante los
-	 * parametros especificados por el enunciado
+	 * parametros especificados por el enunciado.
+	 * 
+	 * NOTA: Para que funcione es necesario especificar los terminos segun el fichero
+	 * tesauro.txt. De esta forma quedará almacenado en el fichero skos.rdf
 	 */
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 
 		String rdf = "Modelo.rdf";
-		@SuppressWarnings("unused")
-		String skos = ""; // Unused
+		String skos = "skos.rdf";
 		String docs = "./recordsdc";
 
 		for (int i = 0; i < args.length; i += 2) {
@@ -116,7 +118,9 @@ public class SemanticGenerator {
 
 		generateTesauro("tesauro.txt");
 
-		System.out.println("Leyendo files");
+		// Escribe el modelo skos
+		model.write(new PrintWriter(skos, "UTF-8"));
+
 		for (File f : listFiles) {
 			addDocument(f);
 		}
@@ -248,6 +252,10 @@ public class SemanticGenerator {
 
 	}
 
+	/**
+	 * Metodo que genera el modelo terminologico de skos en base a un fichero
+	 * especificado por parametro
+	 */
 	private static void generateTesauro(String tesauroPath) {
 		try {
 			Scanner s = new Scanner(new File(tesauroPath));
@@ -272,6 +280,9 @@ public class SemanticGenerator {
 		}
 	}
 
+	/**
+	 * Metodo auxiliar
+	 */
 	private static Resource generateConcept(String tema) {
 		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(conceptName,
 				tema);
@@ -279,12 +290,18 @@ public class SemanticGenerator {
 		return temp;
 	}
 
+	/**
+	 * Metodo auxiliar
+	 */
 	private static void generateSubconcept(Resource original, String tema) {
 		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept)
 				.addProperty(broader, original).addProperty(conceptName, tema);
 		concepts.put(DOMAIN_PATH + tema, temp);
 	}
 
+	/**
+	 * Metodo auxiliar
+	 */
 	private static String normalize(String s) {
 		s = s.toLowerCase();
 		s = Normalizer.normalize(s, Normalizer.Form.NFD);

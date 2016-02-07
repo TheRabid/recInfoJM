@@ -1,0 +1,215 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/TR/skos-primer/"
+    xmlns:recinfo="http://www.recInfo.com/" > 
+  <rdf:Description rdf:about="http://www.recInfo.com/espanol">
+    <recinfo:conceptName>espanol</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/espana"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/medieval">
+    <recinfo:conceptName>medieval</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/arquitectura">
+    <skos:narrower>arquitectonico</skos:narrower>
+    <skos:narrower>arquitecturas</skos:narrower>
+    <skos:narrower>construccion</skos:narrower>
+    <recinfo:conceptName>arquitectura</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/arquitectonico">
+    <recinfo:conceptName>arquitectonico</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/arquitectura"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/energias">
+    <skos:narrower>energia renovable</skos:narrower>
+    <skos:narrower>energia cinetica</skos:narrower>
+    <skos:narrower>energias renovables</skos:narrower>
+    <recinfo:conceptName>energias</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/arquitecturas">
+    <recinfo:conceptName>arquitecturas</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/arquitectura"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/gotica">
+    <recinfo:conceptName>gotica</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/energias renovables">
+    <recinfo:conceptName>energias renovables</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/energias"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/3d">
+    <recinfo:conceptName>3d</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/videojuegos"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/videojuegos">
+    <skos:narrower>renderizado</skos:narrower>
+    <skos:narrower>videojuego</skos:narrower>
+    <skos:narrower>3d</skos:narrower>
+    <skos:narrower>jugabilidad</skos:narrower>
+    <recinfo:conceptName>videojuegos</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/sonido">
+    <recinfo:conceptName>sonido</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/ruido">
+    <recinfo:conceptName>ruido</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/guerra">
+    <skos:narrower>ejercito</skos:narrower>
+    <skos:narrower>independencia</skos:narrower>
+    <recinfo:conceptName>guerra</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/independencia">
+    <recinfo:conceptName>independencia</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/guerra"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/auriculares">
+    <recinfo:conceptName>auriculares</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/jugabilidad">
+    <recinfo:conceptName>jugabilidad</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/videojuegos"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/construccion">
+    <recinfo:conceptName>construccion</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/arquitectura"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/historia">
+    <skos:narrower>gotica</skos:narrower>
+    <skos:narrower>gotico</skos:narrower>
+    <skos:narrower>media</skos:narrower>
+    <skos:narrower>medieval</skos:narrower>
+    <skos:narrower>edad media</skos:narrower>
+    <skos:narrower>romanica</skos:narrower>
+    <skos:narrower>historico</skos:narrower>
+    <recinfo:conceptName>historia</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/gotico">
+    <recinfo:conceptName>gotico</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/renderizado">
+    <recinfo:conceptName>renderizado</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/videojuegos"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/ejercito">
+    <recinfo:conceptName>ejercito</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/guerra"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/artistica">
+    <recinfo:conceptName>artistica</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/edad media">
+    <recinfo:conceptName>edad media</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/cancion">
+    <recinfo:conceptName>cancion</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/historico">
+    <recinfo:conceptName>historico</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/acustico">
+    <recinfo:conceptName>acustico</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/diseno">
+    <recinfo:conceptName>diseno</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/musical">
+    <recinfo:conceptName>musical</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/audio">
+    <recinfo:conceptName>audio</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/energia cinetica">
+    <recinfo:conceptName>energia cinetica</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/energias"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/energia renovable">
+    <recinfo:conceptName>energia renovable</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/energias"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/rock">
+    <recinfo:conceptName>rock</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/musica"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/media">
+    <recinfo:conceptName>media</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/personajes">
+    <recinfo:conceptName>personajes</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/espana">
+    <skos:narrower>espanol</skos:narrower>
+    <recinfo:conceptName>espana</recinfo:conceptName>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/romanica">
+    <recinfo:conceptName>romanica</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/historia"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/musica">
+    <skos:narrower>cancion</skos:narrower>
+    <skos:narrower>auriculares</skos:narrower>
+    <skos:narrower>ruido</skos:narrower>
+    <skos:narrower>acustico</skos:narrower>
+    <skos:narrower>musical</skos:narrower>
+    <skos:narrower>sonido</skos:narrower>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+    <skos:narrower>rock</skos:narrower>
+    <skos:narrower>artistica</skos:narrower>
+    <skos:narrower>audio</skos:narrower>
+    <recinfo:conceptName>musica</recinfo:conceptName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.recInfo.com/videojuego">
+    <recinfo:conceptName>videojuego</recinfo:conceptName>
+    <skos:broader rdf:resource="http://www.recInfo.com/videojuegos"/>
+    <rdf:type rdf:resource="http://www.w3.org/TR/skos-primer/Concept"/>
+  </rdf:Description>
+</rdf:RDF>

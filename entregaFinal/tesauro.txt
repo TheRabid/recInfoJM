@@ -1,0 +1,38 @@
+musica
+musica-audio
+musica-acústico
+musica-sonido
+musica-ruido
+musica-auriculares
+musica-canción
+musica-musical
+musica-artística
+musica-rock
+videojuegos
+videojuegos-jugabilidad
+videojuegos-3D
+videojuegos-videojuego
+videojuegos-renderizado
+diseño
+personajes
+Guerra
+Guerra-independencia
+Guerra-EJÉRCITO
+España
+España-ESPAÑOL
+historia
+historia-histórico
+historia-románica
+historia-Edad Media
+historia-medieval
+historia-media
+historia-gótico
+historia-gótica
+arquitectura
+arquitectura-construccion
+arquitectura-arquitecturas
+arquitectura-arquitectónico
+energías
+energías-Energías renovables
+energías-energía cinética
+energías-energía renovable

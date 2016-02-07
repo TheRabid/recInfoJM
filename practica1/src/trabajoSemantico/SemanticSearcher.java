@@ -61,8 +61,6 @@ public class SemanticSearcher {
 		while (s.hasNextLine()) { // Para cada consulta
 			String numCons = s.next();
 			String queryString = s.nextLine();
-			System.out.println("Nueva consulta " + numCons);
-
 			if (!queryString.equals("")) {
 
 				// Ejecutamos la consulta y obtenemos los resultados
@@ -73,12 +71,11 @@ public class SemanticSearcher {
 					ResultSet results = qexec.execSelect();
 					for (; results.hasNext();) { // Se escribe cada resultado en
 													// output
-						System.out.println("new " + numCons);
 						QuerySolution soln = results.nextSolution();
 						Iterator<String> it = soln.varNames();
 						writer.printf(numCons + "\t");
 						while (it.hasNext()) {
-							writer.printf(soln.get(it.next()) + "\t");
+							writer.printf(soln.get(it.next())+"");
 						}
 						writer.println();
 
