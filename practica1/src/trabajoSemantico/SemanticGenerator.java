@@ -25,9 +25,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * @author Alberto Sabater Bailon (546297)
  * @author Jaime Ruiz-Borau Vizarraga (546751)
  * 
- *         La clase SemanticGenerator contiene metodos asi como un metodo
- *         principal para poder generar el modelo completo rdf segun las
- *         especificaciones del enunciado
+ *         La clase SemanticGenerator contiene metodos para gestionar modelos
+ *         rdf asi como un metodo principal para poder generar el modelo
+ *         completo rdf segun las especificaciones del enunciado
  */
 
 public class SemanticGenerator {
@@ -63,12 +63,13 @@ public class SemanticGenerator {
 	private static ArrayList<String> temas;
 
 	/**
-	 * Metodo main de la clase SemanticGenerator
-	 * Puede ser usado mediante los parametros especificados por el enunciado
+	 * Metodo main de la clase SemanticGenerator Puede ser usado mediante los
+	 * parametros especificados por el enunciado
 	 */
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 
 		String rdf = "Modelo.rdf";
+		@SuppressWarnings("unused")
 		String skos = ""; // Unused
 		String docs = "./recordsdc";
 
