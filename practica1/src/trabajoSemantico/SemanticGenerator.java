@@ -10,36 +10,44 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * @author Alberto Sabater Bailon (546297)
+ * @author Jaime Ruiz-Borau Vizarraga (546751)
+ * 
+ *         La clase SemanticGenerator contiene metodos asi como un metodo
+ *         principal para poder generar el modelo completo rdf segun las
+ *         especificaciones del enunciado
+ */
+
 public class SemanticGenerator {
 
-	public static Model model;
-	public static final String DOMAIN_PATH = "http://www.recInfo.com/";
-	public static final String SKOS_PATH = "http://www.w3.org/TR/skos-primer/";
-
+	/* Hashmaps para organizar los recursos */
 	public static HashMap<String, Resource> persons;
 	public static HashMap<String, Resource> concepts;
 
+	/* Dominios */
+	public static final String DOMAIN_PATH = "http://www.recInfo.com/";
+	public static final String SKOS_PATH = "http://www.w3.org/TR/skos-primer/";
+
+	/* Variables del modelo */
+	public static Model model;
 	public static Resource person;
 	public static Resource document;
 	public static Resource concept;
 	public static Property name;
 	public static Property lastName;
 	public static Property type;
-
 	public static Property identifier;
 	public static Property title;
 	public static Property autor;
@@ -54,25 +62,28 @@ public class SemanticGenerator {
 
 	private static ArrayList<String> temas;
 
+	/**
+	 * Metodo main de la clase SemanticGenerator
+	 * Puede ser usado mediante los parametros especificados por el enunciado
+	 */
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-		
-		
+
 		String rdf = "Modelo.rdf";
-		String skos = "";	// Unused
+		String skos = ""; // Unused
 		String docs = "./recordsdc";
-		
-		for (int i=0; i<args.length; i+=2) {
+
+		for (int i = 0; i < args.length; i += 2) {
 			if (args[i].toLowerCase().equals("-rdf")) {
-				rdf = args[i+1];
+				rdf = args[i + 1];
 			}
 			if (args[i].toLowerCase().equals("-skos")) {
-				skos = args[i+1];
+				skos = args[i + 1];
 			}
 			if (args[i].toLowerCase().equals("-docs")) {
-				docs = args[i+1];
+				docs = args[i + 1];
 			}
 		}
-		
+
 		temas = new ArrayList<String>();
 		File[] listFiles = new File(docs).listFiles();
 
@@ -111,9 +122,12 @@ public class SemanticGenerator {
 
 		model.write(new PrintWriter(rdf, "UTF-8"));
 
-		
 	}
 
+	/**
+	 * El metodo AddDocument es el que se encarga de parsear los documentos de
+	 * la coleccion y de anadirlos al modelo rdf
+	 */
 	public static void addDocument(File f) {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -139,8 +153,8 @@ public class SemanticGenerator {
 				String temp = doc.getElementsByTagName("dc:title").item(0).getTextContent();
 				newDocument.addProperty(title, temp);
 				for (String a : temas) {
-//					if (normalize(temp).contains(a)) {
-					if (normalize(temp).matches(".*([^A-Za-z]|^)"+a+"([^A-Za-z]|$).*")) {
+					// if (normalize(temp).contains(a)) {
+					if (normalize(temp).matches(".*([^A-Za-z]|^)" + a + "([^A-Za-z]|$).*")) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
@@ -185,7 +199,7 @@ public class SemanticGenerator {
 				String desc = doc.getElementsByTagName("dc:description").item(0).getTextContent();
 				newDocument.addProperty(description, desc);
 				for (String a : temas) {
-					if (normalize(desc).matches(".*([^A-Za-z]|^)"+a+"([^A-Za-z]|$).*")) {
+					if (normalize(desc).matches(".*([^A-Za-z]|^)" + a + "([^A-Za-z]|$).*")) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
@@ -276,5 +290,5 @@ public class SemanticGenerator {
 		s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
 		return s;
 	}
-	
+
 }
