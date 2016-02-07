@@ -49,6 +49,7 @@ public class SemanticGenerator {
 	public static Property narrower;
 	public static Property hasConcept;
 	public static Property conceptName;
+	public static Property broader;
 
 	private static ArrayList<String> temas;
 
@@ -64,7 +65,7 @@ public class SemanticGenerator {
 		model.setNsPrefix("skos", SKOS_PATH);
 		person = model.createResource(DOMAIN_PATH + "Persona");
 		document = model.createResource(DOMAIN_PATH + "Document");
-		concept = model.createResource(DOMAIN_PATH + "Concept");
+		concept = model.createResource(SKOS_PATH + "Concept");
 		type = model.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
 
 		name = model.createProperty(DOMAIN_PATH + "Nombre");
@@ -78,6 +79,7 @@ public class SemanticGenerator {
 		date = model.createProperty(DOMAIN_PATH + "Fecha");
 		language = model.createProperty(DOMAIN_PATH + "Idioma");
 		narrower = model.createProperty(SKOS_PATH + "narrower");
+		broader = model.createProperty(SKOS_PATH + "broader");
 		hasConcept = model.createProperty(DOMAIN_PATH + "hasConcept");
 		conceptName = model.createProperty(DOMAIN_PATH + "conceptName");
 
@@ -220,7 +222,7 @@ public class SemanticGenerator {
 	private static void generateTesauro(String tesauroPath) {
 		try {
 			Scanner s = new Scanner(new File(tesauroPath));
-			String used = null;
+			Resource used = null;
 			while (s.hasNextLine()) {
 
 				String[] line = s.nextLine().split("-");
@@ -231,6 +233,7 @@ public class SemanticGenerator {
 				} else if (line.length == 2) { // SubTema
 					temas.add(line[1].toLowerCase());
 					generateSubconcept(used, line[1].toLowerCase());
+					used.addProperty(narrower, line[1].toLowerCase());
 				}
 
 			}
@@ -240,16 +243,16 @@ public class SemanticGenerator {
 		}
 	}
 
-	private static String generateConcept(String tema) {
+	private static Resource generateConcept(String tema) {
 		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(conceptName,
 				tema);
 		concepts.put(DOMAIN_PATH + tema, temp);
-		return tema;
+		return temp;
 	}
 
-	private static void generateSubconcept(String original, String tema) {
+	private static void generateSubconcept(Resource original, String tema) {
 		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept)
-				.addProperty(narrower, concepts.get(DOMAIN_PATH + original)).addProperty(conceptName, tema);
+				.addProperty(broader, original).addProperty(conceptName, tema);
 		concepts.put(DOMAIN_PATH + tema, temp);
 	}
 
