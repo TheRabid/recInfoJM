@@ -42,9 +42,12 @@ public class SemanticGenerator {
 	public static Property publisher;
 	public static Property date;
 	public static Property language;
-	public static Property narrower;
 	public static Property hasConcept;
 
+	public static Property narrower;
+	public static Property broader;
+	
+	
 	private static ArrayList<String> temas;
 
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
@@ -72,8 +75,10 @@ public class SemanticGenerator {
 		publisher = model.createProperty(DOMAIN_PATH + "Publicacion");
 		date = model.createProperty(DOMAIN_PATH + "Fecha");
 		language = model.createProperty(DOMAIN_PATH + "Idioma");
-		narrower = model.createProperty(SKOS_PATH + "narrower");
 		hasConcept = model.createProperty(DOMAIN_PATH + "hasConcept");
+
+		narrower = model.createProperty(SKOS_PATH + "narrower");
+		broader = model.createProperty(SKOS_PATH + "broader");
 
 		generateTesauro("tesauro.txt");
 
@@ -209,17 +214,19 @@ public class SemanticGenerator {
 	private static void generateTesauro(String tesauroPath) {
 		try {
 			Scanner s = new Scanner(new File(tesauroPath));
-			String used = null;
+			Resource current = null;
+
 			while (s.hasNextLine()) {
 
 				String[] line = s.nextLine().split("-");
 
 				if (line.length == 1) { // Tema
 					temas.add(line[0].toLowerCase());
-					used = generateConcept(line[0].toLowerCase());
+					current = generateConcept(line[0].toLowerCase());
 				} else if (line.length == 2) { // SubTema
 					temas.add(line[1].toLowerCase());
-					generateSubconcept(used, line[1].toLowerCase());
+					generateSubconcept(line[0].toLowerCase(), line[1].toLowerCase());
+					current.addProperty(narrower, line[1].toLowerCase());
 				}
 
 			}
@@ -229,13 +236,13 @@ public class SemanticGenerator {
 		}
 	}
 
-	private static String generateConcept(String tema) {
-		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept);
-		return tema;
+	private static Resource generateConcept(String tema) {
+		Resource concpt = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept);
+		return concpt;
 	}
 
 	private static void generateSubconcept(String original, String tema) {
-		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(narrower,
+		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(broader,
 				DOMAIN_PATH + original);
 	}
 
