@@ -173,7 +173,6 @@ public class SemanticGenerator {
 				String desc = doc.getElementsByTagName("dc:description").item(0).getTextContent();
 				newDocument.addProperty(description, desc);
 				for (String a : temas) {
-//					if (normalize(desc).contains(a)) {
 					if (normalize(desc).matches(".*([^A-Za-z]|^)"+a+"([^A-Za-z]|$).*")) {
 						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
