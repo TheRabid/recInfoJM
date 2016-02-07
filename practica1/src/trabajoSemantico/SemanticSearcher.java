@@ -31,29 +31,42 @@ public class SemanticSearcher {
 		String infoNeeds = "infoNeedsS.txt";
 		String output = "semanticResults10.txt";
 		
+		for (int i=0; i<args.length; i+=2) {
+			if (args[i].toLowerCase().equals("-rdf")) {
+				rdf = args[i+1];
+			}
+			if (args[i].toLowerCase().equals("-rdfs")) {
+				rdfs = args[i+1];
+			}
+			if (args[i].toLowerCase().equals("-infoNeeds")) {
+				infoNeeds = args[i+1];
+			}
+			if (args[i].toLowerCase().equals("-output")) {
+				output = args[i+1];
+			}
+		}
 		
 
-		// cargamos el fichero deseado
+		// Carga del modelo
 		Model model = FileManager.get().loadModel(rdf);
 		PrintWriter writer = new PrintWriter(output, "UTF-8");
 
 		
-		/*Scanner s = new Scanner(new File(infoNeeds));
-		while (s.hasNextLine()) {
+		Scanner s = new Scanner(new File(infoNeeds));
+		while (s.hasNextLine()) {		// Para cada consulta
 			String numCons = s.next();
-//			if (!numCons.equals("05-05")) continue;
 			String queryString = s.nextLine();
 			System.out.println("Nueva consulta " + numCons);
 
 			if (!queryString.equals("")) {
 
-				// ejecutamos la consulta y obtenemos los resultados
+				// Ejecutamos la consulta y obtenemos los resultados
 				Query query = QueryFactory.create(queryString);
 				QueryExecution qexec = QueryExecutionFactory.create(query, model);
 
 				try {
 					ResultSet results = qexec.execSelect();
-					for (; results.hasNext();) {
+					for (; results.hasNext();) {	// Se escribe cada resultado en output
 						System.out.println("new " + numCons); 
 						QuerySolution soln = results.nextSolution();
 						Iterator<String> it = soln.varNames();
@@ -68,9 +81,9 @@ public class SemanticSearcher {
 					qexec.close();
 				}
 			}
-		}*/
-		
-		for (int i = 0; i < Consultas.consultas.length; i++) {
+		}
+
+		/*for (int i = 0; i < Consultas.consultas.length; i++) {
 //			if (i != 4) continue;
 
 			System.out.println("Nueva consulta");
@@ -85,7 +98,7 @@ public class SemanticSearcher {
 				try {
 					ResultSet results = qexec.execSelect();
 					for (; results.hasNext();) {
-						System.out.println("new "); 
+//						System.out.println("new "); 
 						QuerySolution soln = results.nextSolution();
 						Iterator<String> it = soln.varNames();
 						writer.printf(Consultas.identificadores[i] + "\t");
@@ -99,7 +112,7 @@ public class SemanticSearcher {
 					qexec.close();
 				}
 			}
-		}
+		}*/
 		writer.close();
 	}
 
