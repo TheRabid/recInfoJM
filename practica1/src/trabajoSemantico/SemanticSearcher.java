@@ -56,24 +56,51 @@ public class SemanticSearcher {
 				+ " ORDER BY ?id ";
 		*/
 		
-		
-		 //Consulta 02_04
-		 String queryString = ""
+		/*
+		//Consulta 02_04
+		String queryString = ""
 				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
 				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
 				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-				+ " SELECT DISTINCT ?id where {"
-				+ "    ?doc recinfo:hasConcept ?concept . "
+				+ " SELECT DISTINCT ?id ?concept where {"
+				+ "    ?doc recinfo:hasConcept ?concept1 . "
+				+ "    ?doc recinfo:hasConcept ?concept2 . "
+				+ "    ?doc recinfo:hasConcept ?concept3 . "
 				+ "    ?doc recinfo:Identificador ?id "
-				+ "    { ?concept recinfo:conceptName \"guerra\" }"
+				+ "    { "
+				+ "      { ?concept1 recinfo:conceptName \"guerra\" }"
+				+ "      UNION"
+				+ "      { ?concept1 skos:broader ?sub . "
+				+ "        ?sub recinfo:conceptName \"guerra\" } "
+				+ "      { ?concept2 recinfo:conceptName \"historia\" }"
+				+ "      UNION"
+				+ "      { ?concept2 skos:broader ?sub . "
+				+ "        ?sub recinfo:conceptName \"historia\" } "
+				+ "    } "
 				+ "    UNION"
-				+ "    { ?concept skos:broader ?sub . "
-				+ "      ?sub recinfo:conceptName \"guerra\" } "
+				+ "    { ?concept3 recinfo:conceptName \"espana\" }"
 				+ "    UNION"
-				+ "    { ?concept recinfo:conceptName \"españa\" }"
-				+ "    UNION"
-				+ "    { ?concept skos:broader ?sub . "
-				+ "      ?sub recinfo:conceptName \"españa\" } "
+				+ "    { ?concept3 skos:broader ?sub . "
+				+ "      ?sub recinfo:conceptName \"espana\" } "
+				+ " }"
+				+ " ORDER BY ?id ";
+		*/
+		
+		//Consulta 09_3
+		String queryString = ""
+				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
+				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
+				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
+				+ " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n"
+				+ " SELECT DISTINCT ?id WHERE {"
+				+ "   ?doc recinfo:Identificador ?id."
+				+ "   ?doc recinfo:hasConcept ?concept."
+				+ "   { ?concept recinfo:conceptName \"energias\". } "
+				+ "   UNION"
+				+ "   { ?concept skos:broader ?sub . "
+				+ "     ?sub recinfo:conceptName \"energias\" } "
+				+ "   ?doc recinfo:Fecha ?year"
+				+ "   FILTER (xsd:integer(?year) > 2010 && xsd:integer(?year) < 2015) "
 				+ " }"
 				+ " ORDER BY ?id ";
 		
