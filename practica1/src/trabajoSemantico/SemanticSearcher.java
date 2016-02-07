@@ -29,7 +29,7 @@ public class SemanticSearcher {
 		String rdf = "Modelo.rdf";
 		String rdfs = "";	// Unused
 		String infoNeeds = "infoNeedsS.txt";
-		String output = "equipo10semantic.txt";
+		String output = "semanticResults10.txt";
 		
 		
 
