@@ -38,11 +38,13 @@ public class SemanticSearcher {
 				+ " PREFIX recinfo: <http://www.recInfo.com/> \n"
 				+ " PREFIX skos: <http://www.w3.org/TR/skos-primer/> \n"
 				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"
-				+ " SELECT ?x ?y WHERE  { \n"
-				+ " ?x rdf:type recinfo:Document. \n"
-				+ " ?x recinfo:hasConcept ?y. \n"
-				+ " ?y skos:narrower recinfo:guerra. \n"
-				+ " } ";
+				+ " select distinct ?id ?concept where {"
+				+ " ?doc recinfo:Identificador ?id."
+				+ " ?doc recinfo:hasConcept ?concept."
+				+ " ?concept recinfo:conceptName \"musica\". "
+				+ " ?doc recinfo:Autor ?autor."
+				+ " ?autor recinfo:Nombre \"Javier\""
+				+ " }";
 
 		// ejecutamos la consulta y obtenemos los resultados
 		Query query = QueryFactory.create(queryString);
@@ -52,8 +54,9 @@ public class SemanticSearcher {
 			ResultSet results = qexec.execSelect();
 			for (; results.hasNext();) {
 				QuerySolution soln = results.nextSolution();
-				Resource x = soln.getResource("x");
-				RDFNode z = soln.get("y");
+				RDFNode x = soln.get("id");
+				RDFNode y = soln.get("concept");
+//				RDFNode z = soln.get("y");
 //				Resource y = soln.getResource("y");
 				/*RDFNode z = soln.get("z");
 				if (z.isLiteral()) {
@@ -62,7 +65,7 @@ public class SemanticSearcher {
 					System.out.println(x.getURI() + " - " + y.getURI() + " - " + z.asResource().getURI());
 				}*/
 				
-				System.out.println(x.getURI() + " - " + z);
+				System.out.println(x.toString() + " - " + y.toString());
 			}
 		} finally
 

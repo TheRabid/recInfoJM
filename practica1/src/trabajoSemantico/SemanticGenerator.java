@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,6 +29,9 @@ public class SemanticGenerator {
 	public static final String DOMAIN_PATH = "http://www.recInfo.com/";
 	public static final String SKOS_PATH = "http://www.w3.org/TR/skos-primer/";
 
+	public static HashMap<String, Resource> persons;
+	public static HashMap<String, Resource> concepts;
+
 	public static Resource person;
 	public static Resource document;
 	public static Resource concept;
@@ -44,6 +48,7 @@ public class SemanticGenerator {
 	public static Property language;
 	public static Property narrower;
 	public static Property hasConcept;
+	public static Property conceptName;
 
 	private static ArrayList<String> temas;
 
@@ -74,6 +79,10 @@ public class SemanticGenerator {
 		language = model.createProperty(DOMAIN_PATH + "Idioma");
 		narrower = model.createProperty(SKOS_PATH + "narrower");
 		hasConcept = model.createProperty(DOMAIN_PATH + "hasConcept");
+		conceptName = model.createProperty(DOMAIN_PATH + "conceptName");
+
+		persons = new HashMap<String, Resource>();
+		concepts = new HashMap<String, Resource>();
 
 		generateTesauro("tesauro.txt");
 
@@ -116,7 +125,7 @@ public class SemanticGenerator {
 				newDocument.addProperty(title, temp);
 				for (String a : temas) {
 					if (temp.toLowerCase().contains(a.toLowerCase())) {
-						newDocument.addProperty(hasConcept, DOMAIN_PATH + a);
+						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
 			}
@@ -128,25 +137,27 @@ public class SemanticGenerator {
 
 				for (int i = 0; i < nodes.getLength(); i++) {
 					if (doc.getElementsByTagName("dc:creator").item(0).getTextContent().split(", ").length == 1) {
-						model.createResource(DOMAIN_PATH
-								+ doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""))
+
+						String URI = DOMAIN_PATH
+								+ doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", "");
+						Resource personita = model.createResource(URI)
 								.addProperty(name, doc.getElementsByTagName("dc:creator").item(i).getTextContent())
 								.addProperty(type, person);
+						persons.put(URI, personita);
+						newDocument.addProperty(autor, persons.get(URI));
 
-						newDocument.addProperty(autor, DOMAIN_PATH
-								+ doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""));
 					} else if (doc.getElementsByTagName("dc:creator").item(i).getTextContent()
 							.split(", ").length == 2) {
-						model.createResource(DOMAIN_PATH
-								+ doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", ""))
+						String URI = DOMAIN_PATH
+								+ doc.getElementsByTagName("dc:creator").item(i).getTextContent().replace(" ", "");
+						Resource personita = model.createResource(URI)
 								.addProperty(name,
 										doc.getElementsByTagName("dc:creator").item(i).getTextContent().split(", ")[1])
 								.addProperty(lastName,
 										doc.getElementsByTagName("dc:creator").item(i).getTextContent().split(", ")[0])
 								.addProperty(type, person);
-
-						newDocument.addProperty(autor, DOMAIN_PATH
-								+ doc.getElementsByTagName("dc:creator").item(0).getTextContent().replace(" ", ""));
+						persons.put(URI, personita);
+						newDocument.addProperty(autor, persons.get(URI));
 					}
 				}
 			}
@@ -159,7 +170,7 @@ public class SemanticGenerator {
 				newDocument.addProperty(description, desc);
 				for (String a : temas) {
 					if (desc.toLowerCase().contains(a.toLowerCase())) {
-						newDocument.addProperty(hasConcept, DOMAIN_PATH + a);
+						newDocument.addProperty(hasConcept, concepts.get(DOMAIN_PATH + a));
 					}
 				}
 			}
@@ -230,13 +241,16 @@ public class SemanticGenerator {
 	}
 
 	private static String generateConcept(String tema) {
-		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept);
+		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(conceptName,
+				tema);
+		concepts.put(DOMAIN_PATH + tema, temp);
 		return tema;
 	}
 
 	private static void generateSubconcept(String original, String tema) {
-		model.createResource(DOMAIN_PATH + tema).addProperty(type, concept).addProperty(narrower,
-				DOMAIN_PATH + original);
+		Resource temp = model.createResource(DOMAIN_PATH + tema).addProperty(type, concept)
+				.addProperty(narrower, concepts.get(DOMAIN_PATH + original)).addProperty(conceptName, tema);
+		concepts.put(DOMAIN_PATH + tema, temp);
 	}
 
 }
