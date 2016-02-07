@@ -9,10 +9,6 @@ musica-musical
 musica-artística
 musica-rock
 videojuegos
-videojuegos-gráfica
-videojuegos-plataformas
-videojuegos-virtual
-videojuegos-virtuales
 videojuegos-jugabilidad
 videojuegos-3D
 videojuegos-videojuego
@@ -26,7 +22,7 @@ España-ESPAÑOL
 historia
 historia-histórico
 historia-románica
-historia-Media
+historia-Edad Media
 historia-medieval
 arquitectura
 arquitectura-construccion
